@@ -1,4 +1,3 @@
-shijian
-=======
+# shijian
 
 Python time functions
