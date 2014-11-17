@@ -4,13 +4,9 @@
 #                                                                              #
 ################################################################################
 #                                                                              #
-# version: 2014-10-27T1953Z                                                    #
-#                                                                              #
-################################################################################
-#                                                                              #
 # LICENCE INFORMATION                                                          #
 #                                                                              #
-# This program provides elegant printing utilities in Python.                  #
+# This program provides change and time utilities in Python.                  #
 #                                                                              #
 # copyright (C) 2014 William Breaden Madden                                    #
 #                                                                              #
@@ -32,8 +28,20 @@
 #                                                                              #
 ################################################################################
 
+version = "2014-11-16T1904Z"
+
 import time
 import datetime as datetime
+
+def time_UNIX(
+    style = "UNIX time S"
+    ):
+    return(
+        style_datetime_object(
+            datetimeObject = datetime.datetime.utcnow(),
+            style = style
+        )
+    )
 
 def time_UTC(
     style = None
@@ -67,3 +75,24 @@ def style_datetime_object(
     # filename safe
     else:
         return(datetimeObject.strftime('%Y-%m-%dT%H%M%SZ'))
+
+def unique3DigitNumber():
+    return(uniqueNumber(style ="integer 3 significant figures"))
+
+def uniqueNumber(
+    style = None
+    ):
+    if style == "integer 3 significant figures":
+        initialNumber = 100
+    else:
+        initialNumber = 1
+    if "uniqueNumbers" not in globals():
+        global uniqueNumbers
+        uniqueNumbers = []
+    if not uniqueNumbers:
+        uniqueNumbers.append(initialNumber)
+    else:
+        uniqueNumbers.append(uniqueNumbers[-1] + 1)
+    if style == "integer 3 significant figures" and uniqueNumbers[-1] > 999:
+        raise Exception
+    return(uniqueNumbers[-1])

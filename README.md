@@ -1,3 +1,3 @@
 # shijian
 
-Python time functions
+Python change and time functions
