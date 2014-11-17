@@ -6,7 +6,7 @@
 #                                                                              #
 # LICENCE INFORMATION                                                          #
 #                                                                              #
-# This program provides change and time utilities in Python.                  #
+# This program provides change and time utilities in Python.                   #
 #                                                                              #
 # copyright (C) 2014 William Breaden Madden                                    #
 #                                                                              #
@@ -28,8 +28,9 @@
 #                                                                              #
 ################################################################################
 
-version = "2014-11-16T1904Z"
+version = "2014-11-17T1802Z"
 
+import os
 import time
 import datetime as datetime
 
@@ -96,3 +97,42 @@ def uniqueNumber(
     if style == "integer 3 significant figures" and uniqueNumbers[-1] > 999:
         raise Exception
     return(uniqueNumbers[-1])
+
+## @brief propose a filename
+#  @detail This function returns a filename string. If a default filename is not
+#  specified, the function generates one based on the current time. If a default
+#  filename is specified, the function uses it as the default filename. By
+#  default, the function then checks to see if using the filename would cause
+#  overwriting of an existing file. If overwriting is possible, the function
+#  appends an integer to the filename in a loop in order to generate a filename
+#  that would not cause overwriting of an existing file. The function can be set
+#  to overwrite instead of using the default overwrite protection behaviour.
+#  @return filename string
+def proposeFileName(
+    fileName  = None,
+    overwrite = False
+    ):
+    # If no file name is specified, generate one.
+    if not fileName:
+        fileName = time_UTC()
+    fileNameProposed = fileName
+    if not overwrite:
+        count = 0
+        while os.path.exists(fileNameProposed):
+            count = count + 1
+            fileNameDirectory = os.path.dirname(fileName)
+            fileNameBase = os.path.splitext(os.path.basename(fileName))[0]
+            fileNameExtension = os.path.splitext(os.path.basename(fileName))[1]
+            if fileNameDirectory:
+                fileNameProposed = fileNameDirectory + \
+                                   "/" + \
+                                   fileNameBase + \
+                                   "_" + \
+                                   str(count) + \
+                                   fileNameExtension
+            else:
+                fileNameProposed = fileNameBase + \
+                                   "_" + \
+                                   str(count) + \
+                                   fileNameExtension
+    return(fileNameProposed)
