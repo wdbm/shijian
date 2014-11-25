@@ -28,10 +28,11 @@
 #                                                                              #
 ################################################################################
 
-version = "2014-11-17T1802Z"
+version = "2014-11-25T1204Z"
 
 import os
 import time
+import uuid as uuid
 import datetime as datetime
 
 def time_UNIX(
@@ -136,3 +137,6 @@ def proposeFileName(
                                    str(count) + \
                                    fileNameExtension
     return(fileNameProposed)
+
+def UID():
+    return(str(uuid.uuid4()))
