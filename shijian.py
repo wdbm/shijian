@@ -179,6 +179,7 @@ class Clock(object):
     def stop(self):
         self._updateTime = None
         self._startTime  = None
+        self._stopTime   = datetime.datetime.utcnow()
 
     # Update the clock accumulator.
     def update(self):
@@ -215,6 +216,12 @@ class Clock(object):
     def startTime(self):
         if self._startTime:
             return(style_datetime_object(datetimeObject = self._startTime))
+        else:
+            return("none")
+
+    def stopTime(self):
+        if self._stopTime:
+            return(style_datetime_object(datetimeObject = self._stopTime))
         else:
             return("none")
 
