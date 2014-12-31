@@ -30,7 +30,7 @@ from __future__ import division
 #                                                                              #
 ################################################################################
 
-version = "2014-12-28T0245Z"
+version = "2014-12-31T2004Z"
 
 import os
 import time
@@ -162,6 +162,9 @@ class Clock(object):
         ):
         self._name       = name
         self._start      = start # Boolean start clock on instantiation
+        self._startTime  = None # internal (value to return)
+        self.__startTime = None # internal (value for calculations)
+        self._stopTime   = None # internal (value to return)
         self._updateTime = None # internal
         # If no name is specified, generate a unique one.
         if self._name is None:
@@ -174,11 +177,12 @@ class Clock(object):
             self.start()
 
     def start(self):
-        self._startTime  = datetime.datetime.utcnow()
+        self.__startTime  = datetime.datetime.utcnow()
+        self._startTime   = datetime.datetime.utcnow()
 
     def stop(self):
         self._updateTime = None
-        self._startTime  = None
+        self.__startTime = None
         self._stopTime   = datetime.datetime.utcnow()
 
     # Update the clock accumulator.
@@ -189,19 +193,19 @@ class Clock(object):
             )
         else:
             self.accumulator += (
-                datetime.datetime.utcnow() - self._startTime
+                datetime.datetime.utcnow() - self.__startTime
             )
         self._updateTime  = datetime.datetime.utcnow()
 
     def reset(self):
         self.accumulator  = datetime.timedelta(0)
-        self._startTime   = None
+        self.__startTime   = None
 
     # If the clock has a start time, add the difference between now and the
     # start time to the accumulator and return the accumulation. If the clock
     # does not have a start time, return the accumulation.
     def elapsed(self):
-        if self._startTime:
+        if self.__startTime:
             self.update()
         return(self.accumulator)
 
@@ -224,6 +228,22 @@ class Clock(object):
             return(style_datetime_object(datetimeObject = self._stopTime))
         else:
             return("none")
+
+    def report(
+        self
+        ):
+        string = "clock attribute".ljust(39)      + "value"
+        string += "\nname:".ljust(40)             + self.name()
+        string += "\ntime start (s):".ljust(40)    + self.startTime()
+        string += "\ntime stop (s):".ljust(40)     + self.stopTime()
+        string += "\ntime elapsed (s):".ljust(40) + str(self.time())
+        string += "\n"
+        return(string)
+
+    def printout(
+        self
+        ):
+        print(self.report())
 
 class Clocks(object):
 

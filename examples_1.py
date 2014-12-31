@@ -15,17 +15,24 @@ def main():
     print("create clock beta")
     beta = shijian.Clock(name = "beta")
     print("clock beta start time: {time}".format(time = beta.startTime()))
+    print("clock beta stop time: {time}".format(time = beta.stopTime()))
     print("sleep 2 seconds")
     time.sleep(2)
     print("clock beta current time (s): {time}".format(time = beta.time()))
     print("stop clock beta")
     beta.stop()
+    print("clock beta start time: {time}".format(time = beta.startTime()))
     print("clock beta stop time: {time}".format(time = beta.stopTime()))
     print("sleep 2 seconds")
     time.sleep(2)
+    print("clock beta start time: {time}".format(time = beta.startTime()))
+    print("clock beta stop time: {time}".format(time = beta.stopTime()))
     print("clock beta current time (s): {time}".format(time = beta.time()))
 
     print
+    print("clock beta printout:")
+    print
+    beta.printout()
 
     print("create two gamma clocks")
     gamma1 = shijian.Clock(name = "gamma")
