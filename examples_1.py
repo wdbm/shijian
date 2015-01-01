@@ -34,6 +34,11 @@ def main():
     print
     beta.printout()
 
+#    print("run function 1 (which is timed using a decorator)")
+#    function1()
+#
+#    print
+
     print("create two gamma clocks")
     gamma1 = shijian.Clock(name = "gamma")
     gamma1 = shijian.Clock(name = "gamma")
@@ -55,6 +60,12 @@ def main():
 
     print("clocks statistics printout:\n")
     shijian.clocks.printout()
+
+#@shijian.timer
+#def function1():
+#    print("function 1 initiate")
+#    time.sleep(4)
+#    print("function 1 terminate")
 
 if __name__ == '__main__':
     main()

@@ -30,12 +30,14 @@ from __future__ import division
 #                                                                              #
 ################################################################################
 
-version = "2014-12-31T2004Z"
+version = "2014-12-31T2114Z"
 
 import os
 import time
 import uuid as uuid
 import datetime
+import inspect
+import functools
 
 def _main():
     global clocks
@@ -244,6 +246,20 @@ class Clock(object):
         self
         ):
         print(self.report())
+
+#def timer(function):
+#
+#    #@functools.wraps(function)
+#    def decoration(
+#        *args,
+#        **kwargs
+#        ):
+#        arguments = inspect.getcallargs(function, *args, **kwargs)
+#        clock     = Clock(name = function.__name__)
+#        result    = function(*args, **kwargs)
+#        clock.stop()
+#
+#    return(decoration)
 
 class Clocks(object):
 
