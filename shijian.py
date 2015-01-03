@@ -159,18 +159,18 @@ class Clock(object):
 
     def __init__(
         self,
-        name             = None,
-        start            = True
+        name               = None,
+        start              = True
         ):
-        self._name       = name
-        self._start      = start # Boolean start clock on instantiation
-        self._startTime  = None # internal (value to return)
-        self.__startTime = None # internal (value for calculations)
-        self._stopTime   = None # internal (value to return)
-        self._updateTime = None # internal
+        self._name         = name
+        self._start        = start # Boolean start clock on instantiation
+        self._startTime    = None # internal (value to return)
+        self._startTimeTmp = None # internal (value for calculations)
+        self._stopTime     = None # internal (value to return)
+        self._updateTime   = None # internal
         # If no name is specified, generate a unique one.
         if self._name is None:
-            self._name = UID()
+            self._name     = UID()
         # If a global clock list is detected, add a clock instance to it.
         if "clocks" in globals():
             clocks.add(self)
@@ -179,13 +179,13 @@ class Clock(object):
             self.start()
 
     def start(self):
-        self.__startTime  = datetime.datetime.utcnow()
-        self._startTime   = datetime.datetime.utcnow()
+        self._startTimeTmp = datetime.datetime.utcnow()
+        self._startTime    = datetime.datetime.utcnow()
 
     def stop(self):
-        self._updateTime = None
-        self.__startTime = None
-        self._stopTime   = datetime.datetime.utcnow()
+        self._updateTime   = None
+        self._startTimeTmp = None
+        self._stopTime     = datetime.datetime.utcnow()
 
     # Update the clock accumulator.
     def update(self):
@@ -195,19 +195,19 @@ class Clock(object):
             )
         else:
             self.accumulator += (
-                datetime.datetime.utcnow() - self.__startTime
+                datetime.datetime.utcnow() - self._startTimeTmp
             )
-        self._updateTime  = datetime.datetime.utcnow()
+        self._updateTime   = datetime.datetime.utcnow()
 
     def reset(self):
-        self.accumulator  = datetime.timedelta(0)
-        self.__startTime   = None
+        self.accumulator   = datetime.timedelta(0)
+        self._startTimeTmp = None
 
     # If the clock has a start time, add the difference between now and the
     # start time to the accumulator and return the accumulation. If the clock
     # does not have a start time, return the accumulation.
     def elapsed(self):
-        if self.__startTime:
+        if self._startTimeTmp:
             self.update()
         return(self.accumulator)
 
@@ -266,7 +266,7 @@ class Clocks(object):
     def __init__(
         self
         ):
-        self._listOfClocks = []
+        self._listOfClocks       = []
         self._defaultReportStyle = "statistics"
 
     def add(
