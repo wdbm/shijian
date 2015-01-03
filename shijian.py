@@ -30,7 +30,7 @@ from __future__ import division
 #                                                                              #
 ################################################################################
 
-version = "2015-01-03T0652Z"
+version = "2015-01-03T1242Z"
 
 import os
 import time
@@ -183,6 +183,7 @@ class Clock(object):
         self._startTime    = datetime.datetime.utcnow()
 
     def stop(self):
+        self.update()
         self._updateTime   = None
         self._startTimeTmp = None
         self._stopTime     = datetime.datetime.utcnow()
@@ -211,9 +212,7 @@ class Clock(object):
             self.update()
         return(self.accumulator)
 
-    def name(
-        self
-        ):
+    def name(self):
         return(self._name)
 
     def time(self):
@@ -231,9 +230,7 @@ class Clock(object):
         else:
             return("none")
 
-    def report(
-        self
-        ):
+    def report(self):
         string = "clock attribute".ljust(39)      + "value"
         string += "\nname".ljust(40)             + self.name()
         string += "\ntime start (s)".ljust(40)    + self.startTime()
@@ -242,24 +239,23 @@ class Clock(object):
         string += "\n"
         return(string)
 
-    def printout(
-        self
-        ):
+    def printout(self):
         print(self.report())
 
-#def timer(function):
-#
-#    #@functools.wraps(function)
-#    def decoration(
-#        *args,
-#        **kwargs
-#        ):
-#        arguments = inspect.getcallargs(function, *args, **kwargs)
-#        clock     = Clock(name = function.__name__)
-#        result    = function(*args, **kwargs)
-#        clock.stop()
-#
-#    return(decoration)
+def timer(function):
+
+    @functools.wraps(function)
+    def decoration(
+        *args,
+        **kwargs
+        ):
+        arguments = inspect.getcallargs(function, *args, **kwargs)
+        clock     = Clock(name = function.__name__)
+        result    = function(*args, **kwargs)
+        clock.stop()
+        return(result)
+
+    return(decoration)
 
 class Clocks(object):
 

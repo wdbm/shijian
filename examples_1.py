@@ -1,5 +1,6 @@
-import time
 import shijian
+import time
+import inspect
 
 def main():
 
@@ -10,9 +11,7 @@ def main():
     time.sleep(2)
     print("clock alpha current time (s): {time}".format(time = alpha.time()))
 
-    print
-
-    print("create clock beta")
+    print("\ncreate clock beta")
     beta = shijian.Clock(name = "beta")
     print("clock beta start time: {time}".format(time = beta.startTime()))
     print("clock beta stop time: {time}".format(time = beta.stopTime()))
@@ -29,15 +28,8 @@ def main():
     print("clock beta stop time: {time}".format(time = beta.stopTime()))
     print("clock beta current time (s): {time}".format(time = beta.time()))
 
-    print
-    print("clock beta printout:")
-    print
+    print("\nclock beta printout:\n")
     beta.printout()
-
-#    print("run function 1 (which is timed using a decorator)")
-#    function1()
-#
-#    print
 
     print("create two gamma clocks")
     gamma = shijian.Clock(name = "gamma")
@@ -45,27 +37,40 @@ def main():
     print("sleep 2 seconds")
     time.sleep(2)
 
-    print
-
-    print("create two unnamed clocks")
+    print("\ncreate two unnamed clocks")
     delta = shijian.Clock()
     epsilon = shijian.Clock()
     print("sleep 2 seconds")
     time.sleep(2)
 
-    print
+    print("\nrun function 1 (which is timed using internal clocks)")
+    print("result of function 1: {result}".format(result = function1()))
 
-    print("clocks full printout:\n")
+    print("\nrun function 2 (which is timed using a decorator)")
+    print("result of function 2: {result}".format(result = function2()))
+
+    print("\nclocks full printout:\n")
     shijian.clocks.printout(style = "full")
 
     print("clocks statistics printout:\n")
     shijian.clocks.printout()
 
-#@shijian.timer
-#def function1():
-#    print("function 1 initiate")
-#    time.sleep(4)
-#    print("function 1 terminate")
+def function1():
+    functionName = inspect.stack()[0][3]
+    clock = shijian.Clock(name = functionName)
+    print("initiate {functionName}".format(functionName = functionName))
+    time.sleep(3)
+    print("terminate {functionName}".format(functionName = functionName))
+    clock.stop()
+    return(3)
+
+@shijian.timer
+def function2():
+    functionName = inspect.stack()[0][3]
+    print("initiate {functionName}".format(functionName = functionName))
+    time.sleep(4)
+    print("terminate {functionName}".format(functionName = functionName))
+    return(4)
 
 if __name__ == '__main__':
     main()
