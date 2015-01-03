@@ -40,8 +40,8 @@ def main():
 #    print
 
     print("create two gamma clocks")
-    gamma1 = shijian.Clock(name = "gamma")
-    gamma1 = shijian.Clock(name = "gamma")
+    gamma = shijian.Clock(name = "gamma")
+    gamma = shijian.Clock(name = "gamma")
     print("sleep 2 seconds")
     time.sleep(2)
 
