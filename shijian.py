@@ -30,7 +30,7 @@ from __future__ import division
 #                                                                              #
 ################################################################################
 
-version = "2014-12-31T2114Z"
+version = "2015-01-03T0652Z"
 
 import os
 import time
@@ -235,10 +235,10 @@ class Clock(object):
         self
         ):
         string = "clock attribute".ljust(39)      + "value"
-        string += "\nname:".ljust(40)             + self.name()
-        string += "\ntime start (s):".ljust(40)    + self.startTime()
-        string += "\ntime stop (s):".ljust(40)     + self.stopTime()
-        string += "\ntime elapsed (s):".ljust(40) + str(self.time())
+        string += "\nname".ljust(40)             + self.name()
+        string += "\ntime start (s)".ljust(40)    + self.startTime()
+        string += "\ntime stop (s)".ljust(40)     + self.stopTime()
+        string += "\ntime elapsed (s)".ljust(40) + str(self.time())
         string += "\n"
         return(string)
 
