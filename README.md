@@ -50,7 +50,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 'data_1.pkl'
 ```
 
-Function ```UID``` returns a 128 bit unique identifier in hexadecimal with dashes.
+Function ```UID``` returns a 128 bit integer unique identifier in hexadecimal with dashes in accordance with [RFC 4122 UUID version 4](http://tools.ietf.org/html/rfc4122.html).
 
 ```Python
 >>> shijian.UID()
