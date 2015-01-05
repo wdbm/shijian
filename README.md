@@ -68,7 +68,7 @@ Function ```uniqueNumber``` returns an integer that does not exist in a global l
 2
 ```
 
-Function ```unique3DigitNumber``` is a special case of function ```uniqueNumber``` that returns unique integers of 3 significant figures.
+Function ```unique3DigitNumber``` returns an integer of 3 significant figures that does not exist in a global list of integers of 3 significant figures recorded by the function.
 
 ```Python
 >>> shijian.unique3DigitNumber()

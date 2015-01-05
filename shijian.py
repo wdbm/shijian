@@ -30,7 +30,7 @@ from __future__ import division
 #                                                                              #
 ################################################################################
 
-version = "2015-01-03T1242Z"
+version = "2015-01-05T1000Z"
 
 import os
 import time
@@ -98,20 +98,30 @@ def unique3DigitNumber():
 def uniqueNumber(
     style = None
     ):
+    # mode: integer 3 significant figures
     if style == "integer 3 significant figures":
         initialNumber = 100
+        if "uniqueNumbers3SignificantFigures" not in globals():
+            global uniqueNumbers3SignificantFigures
+            uniqueNumbers3SignificantFigures = []
+        if not uniqueNumbers3SignificantFigures:
+            uniqueNumbers3SignificantFigures.append(initialNumber)
+        else:
+            uniqueNumbers3SignificantFigures.append(uniqueNumbers3SignificantFigures[-1] + 1)
+        if style == "integer 3 significant figures" and uniqueNumbers3SignificantFigures[-1] > 999:
+            raise Exception
+        return(uniqueNumbers3SignificantFigures[-1])
+    # mode: integer
     else:
         initialNumber = 1
-    if "uniqueNumbers" not in globals():
-        global uniqueNumbers
-        uniqueNumbers = []
-    if not uniqueNumbers:
-        uniqueNumbers.append(initialNumber)
-    else:
-        uniqueNumbers.append(uniqueNumbers[-1] + 1)
-    if style == "integer 3 significant figures" and uniqueNumbers[-1] > 999:
-        raise Exception
-    return(uniqueNumbers[-1])
+        if "uniqueNumbers" not in globals():
+            global uniqueNumbers
+            uniqueNumbers = []
+        if not uniqueNumbers:
+            uniqueNumbers.append(initialNumber)
+        else:
+            uniqueNumbers.append(uniqueNumbers[-1] + 1)
+        return(uniqueNumbers[-1])
 
 ## @brief propose a filename
 #  @detail This function returns a filename string. If a default filename is not
@@ -292,7 +302,7 @@ class Clocks(object):
                 # Create a report, calculating the average value for each clock
                 # type.
                 string = "clock type".ljust(39) + "mean time (s)"
-                for name, values in dictionaryOfClockTypes.iteritems():
+                for name, values in dictionaryOfClockTypes.items():
                     string += "\n" +\
                               str(name).ljust(39) + str(sum(values)/len(values))
                 string += "\n"
