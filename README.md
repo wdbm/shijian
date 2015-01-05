@@ -2,13 +2,88 @@
 
 Python change and time functions
 
-# quick start
+# usage
+
+## time expressions
+
+Function ```style_datetime_object``` accepts a ```datetime``` object and returns a string representation of a time. The default style is "YYYY-MM-DDTHHMMSS" and it can be changed by argument. Styles available are as follows:
+
+|**time representation***|**comment**|
+|---|---|
+|YYYY-MM-DDTHHMMSSZ|filename safe (default)|
+|YYYY-MM-DDTHHMMSSMMMMMMZ|microseconds|
+|YYYY-MM-DD HH:MM:SS UTC|elegant|
+|UNIX time S.SSSSSS|UNIX time in seconds with second fraction|
+|UNIX time S|UNIX time in seconds rounded|
+
+Functions ```time_UTC``` and ```time_UNIX``` are sorts of special cases of function ```style_datetime_object``` which return representations of the current time (as opposed to any specified datetime object) in a style. For ```time_UTC```, the default style is "YYYY-MM-DDTHHMMSS" and for ```time_UNIX```, the default style is "UNIX time S" and these styles can be changed by argument.
+
+```Python
+>>> shijian.time_UTC()
+'2015-01-05T092125Z'
+>>> shijian.time_UNIX()
+1420449720
+```
+
+## unique identifiers
+
+Function ```proposeFileName``` proposes a safe filename. It can accept a filename suggestion or, by default, can generate its own filename suggestion, a time expression returned by function ```time_UTC```. Filename suggestions are tested and then proposed if they meet test conditions. The default condition is to not overwrite existing files and to append an underscore followed by an integer in order to meet this condition.
+
+```Python
+>python
+Python 2.7.6 (default, Mar 22 2014, 22:59:56) 
+[GCC 4.8.2] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import shijian
+>>> shijian.proposeFileName()
+'2015-01-05T092319Z'
+>>> shijian.proposeFileName(fileName = "data.pkl")
+'data.pkl'
+>>> 
+>touch data.pkl
+>python
+Python 2.7.6 (default, Mar 22 2014, 22:59:56) 
+[GCC 4.8.2] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import shijian
+>>> shijian.proposeFileName(fileName = "data.pkl")
+'data_1.pkl'
+```
+
+Function ```UID``` returns a 128 bit unique identifier in hexadecimal with dashes.
+
+```Python
+>>> shijian.UID()
+'91df3b90-285c-4f22-8ced-a154b3b5b09b'
+>>> shijian.UID()
+'169bde88-2be2-4b46-bf2d-5bb7aee85658'
+```
+
+Function ```uniqueNumber``` returns an integer that does not exist in a global list of integers recorded by the function.
+
+```Python
+>>> shijian.uniqueNumber()
+1
+>>> shijian.uniqueNumber()
+2
+```
+
+Function ```unique3DigitNumber``` is a special case of function ```uniqueNumber``` that returns unique integers of 3 significant figures.
+
+```Python
+>>> shijian.unique3DigitNumber()
+100
+>>> shijian.unique3DigitNumber()
+101
+```
+
+## clocks
 
 Clocks can be created in a straightforward way such as the following:
 
     alpha = shijian.Clock(name = "alpha")
 
-By default, clocks keep time from their creation time. This behaviour can be disabled using the ```start = False``` Boolean argument. Clocks can be assigned a name or can generate their own unique identifier. Clocks can be stopped easily:
+By default, clocks keep time from their creation time. This behaviour can be disabled using Boolean argument ```start = False```. Clocks can be assigned a name or can generate their own unique identifier. Clocks can be stopped easily:
 
 ```Python
 beta.stop()
@@ -35,13 +110,9 @@ Clocks can also provide a general printout of their characteristics:
 alpha.printout()
 ```
 
-All clocks are recorded in the shijian list of clocks. Printouts of the clocks are available in two styles: full and statistics. The full style returns the elapsed times of all clocks while the default statistics style returns the mean times of all clocks of the same name.
+All clocks are recorded in the shijian list of clocks. Printouts of clocks are available in two styles: full and statistics. The style "full" returns the elapsed times of all clocks while the default style "statistics" returns the mean times of all clocks of the same name.
 
 ```Python
 shijian.clocks.printout(style = "full")
 shijian.clocks.printout()
 ```
-
-# future
-
-Under consideration are timing decorators.
