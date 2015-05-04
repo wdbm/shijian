@@ -49,6 +49,20 @@ def main():
     print("\nrun function 2 (which is timed using a decorator)")
     print("result of function 2: {result}".format(result = function2()))
 
+    print("\ncreate clock zeta, to illustrate clock resets")
+    zeta = shijian.Clock(name = "zeta")
+    print("clock zeta start time: {time}".format(time = zeta.startTime()))
+    print("sleep 2 seconds")
+    time.sleep(2)
+    print("clock zeta current time (s): {time}".format(time = zeta.time()))
+    print("reset clock zeta and start it again")
+    zeta.reset()
+    zeta.start()
+    print("clock zeta start time: {time}".format(time = zeta.startTime()))
+    print("sleep 2 seconds")
+    time.sleep(2)
+    print("clock zeta current time (s): {time}".format(time = zeta.time()))
+
     print("\nclocks full printout:\n")
     shijian.clocks.printout(style = "full")
 
