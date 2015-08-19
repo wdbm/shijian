@@ -116,3 +116,11 @@ All clocks are recorded in the shijian list of clocks. Printouts of clocks are a
 shijian.clocks.printout(style = "full")
 shijian.clocks.printout()
 ```
+
+## filename sequences
+
+The function ```natural_sort``` naturally sorts a list. The function ```find_file_sequences```, for which a directory and file extension can be specified, returns a naturally-sorted list of filenames that are in a sequence or returns a dictionary of lists of filenames that are in a sequence. For example, a list something like the following could be returned:
+
+```Bash
+['image-000001.png', 'image-000002.png', 'image-000003.png', 'image-000004.png', 'image-000005.png']
+```

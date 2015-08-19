@@ -30,7 +30,7 @@ from __future__ import division
 #                                                                              #
 ################################################################################
 
-version = "2015-01-05T1000Z"
+version = "2015-08-19T1259Z"
 
 import os
 import time
@@ -38,6 +38,8 @@ import uuid as uuid
 import datetime
 import inspect
 import functools
+import re
+import collections
 
 def _main():
     global clocks
@@ -65,7 +67,7 @@ def time_UTC(
 
 def style_datetime_object(
     datetimeObject = None,
-    style = "YYYY-MM-DDTHHMMSS"
+    style          = "YYYY-MM-DDTHHMMSS"
     ):
     # filename safe
     if style == "YYYY-MM-DDTHHMMSSZ":
@@ -161,6 +163,40 @@ def proposeFileName(
                                    str(count) + \
                                    fileNameExtension
     return(fileNameProposed)
+
+## @brief return a naturally-sorted list
+#  @detail This function returns a naturally-sorted list from an input list.
+def natural_sort(listObject): 
+    convert = lambda text: int(text) if text.isdigit() else text.lower() 
+    alphanumeric_key = lambda key: [
+        convert(text) for text in re.split("([0-9]+)", key)
+    ]
+    return sorted(listObject, key = alphanumeric_key)
+
+## @brief return a naturally-sorted list of filenames that are in a sequence or
+## a dictionary of lists of filenames that are in a sequence
+def find_file_sequences(
+    extension               = "png",
+    directory               = ".",
+    returnFirstSequenceOnly = True,
+    ):
+    filenamesOfDirectory = os.listdir(directory)
+    filenamesFound = [
+        filename for filename in filenamesOfDirectory if re.match(
+            r".*\d+.*\." + extension,
+            filename
+        )
+    ]
+    filenameSequences = collections.defaultdict(list)
+    for filename in filenamesFound:
+        pattern = re.sub("\d+", "XXX", filename)
+        filenameSequences[pattern].append(filename)
+    if returnFirstSequenceOnly is True:
+        firstKeyIdentified = filenameSequences.iterkeys().next()
+        filenameSequence = natural_sort(filenameSequences[firstKeyIdentified])
+        return filenameSequence
+    else:
+        return filenameSequences
 
 def UID():
     return(str(uuid.uuid4()))
