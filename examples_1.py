@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import shijian
 import time
 import inspect

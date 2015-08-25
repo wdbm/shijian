@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import division
 
 ################################################################################
@@ -30,7 +31,7 @@ from __future__ import division
 #                                                                              #
 ################################################################################
 
-version = "2015-08-19T1259Z"
+version = "2015-08-25T0810Z"
 
 import os
 import time
@@ -48,21 +49,17 @@ def _main():
 def time_UNIX(
     style = "UNIX time S"
     ):
-    return(
-        style_datetime_object(
-            datetimeObject = datetime.datetime.utcnow(),
-            style = style
-        )
+    return style_datetime_object(
+        datetimeObject = datetime.datetime.utcnow(),
+        style = style
     )
 
 def time_UTC(
     style = None
     ):
-    return(
-        style_datetime_object(
-            datetimeObject = datetime.datetime.utcnow(),
-            style = style
-        )
+    return style_datetime_object(
+        datetimeObject = datetime.datetime.utcnow(),
+        style = style
     )
 
 def style_datetime_object(
@@ -71,31 +68,27 @@ def style_datetime_object(
     ):
     # filename safe
     if style == "YYYY-MM-DDTHHMMSSZ":
-        return(datetimeObject.strftime('%Y-%m-%dT%H%M%SZ'))
+        return datetimeObject.strftime('%Y-%m-%dT%H%M%SZ')
     # microseconds
     elif style == "YYYY-MM-DDTHHMMSSMMMMMMZ":
-        return(datetimeObject.strftime('%Y-%m-%dT%H%M%S%fZ'))
+        return datetimeObject.strftime('%Y-%m-%dT%H%M%S%fZ')
     # elegant
     elif style == "YYYY-MM-DD HH:MM:SS UTC":
-        return(datetimeObject.strftime('%Y-%m-%d %H:%M:%SZ'))
+        return datetimeObject.strftime('%Y-%m-%d %H:%M:%SZ')
     # UNIX time in seconds with second fraction
     elif style == "UNIX time S.SSSSSS":
-        return(
-            (datetimeObject -\
+        return (datetimeObject -\
             datetime.datetime.utcfromtimestamp(0)).total_seconds()
-        )
     # UNIX time in seconds rounded
     elif style == "UNIX time S":
-        return(
-            int((datetimeObject -\
+        return int((datetimeObject -\
             datetime.datetime.utcfromtimestamp(0)).total_seconds())
-        )
     # filename safe
     else:
-        return(datetimeObject.strftime('%Y-%m-%dT%H%M%SZ'))
+        return datetimeObject.strftime('%Y-%m-%dT%H%M%SZ')
 
 def unique3DigitNumber():
-    return(uniqueNumber(style ="integer 3 significant figures"))
+    return uniqueNumber(style ="integer 3 significant figures")
 
 def uniqueNumber(
     style = None
@@ -112,7 +105,7 @@ def uniqueNumber(
             uniqueNumbers3SignificantFigures.append(uniqueNumbers3SignificantFigures[-1] + 1)
         if style == "integer 3 significant figures" and uniqueNumbers3SignificantFigures[-1] > 999:
             raise Exception
-        return(uniqueNumbers3SignificantFigures[-1])
+        return uniqueNumbers3SignificantFigures[-1]
     # mode: integer
     else:
         initialNumber = 1
@@ -123,7 +116,7 @@ def uniqueNumber(
             uniqueNumbers.append(initialNumber)
         else:
             uniqueNumbers.append(uniqueNumbers[-1] + 1)
-        return(uniqueNumbers[-1])
+        return uniqueNumbers[-1]
 
 ## @brief propose a filename
 #  @detail This function returns a filename string. If a default filename is not
@@ -162,7 +155,7 @@ def proposeFileName(
                                    "_" + \
                                    str(count) + \
                                    fileNameExtension
-    return(fileNameProposed)
+    return fileNameProposed
 
 ## @brief return a naturally-sorted list
 #  @detail This function returns a naturally-sorted list from an input list.
@@ -199,7 +192,7 @@ def find_file_sequences(
         return filenameSequences
 
 def UID():
-    return(str(uuid.uuid4()))
+    return str(uuid.uuid4())
 
 class Clock(object):
 
@@ -256,25 +249,25 @@ class Clock(object):
     def elapsed(self):
         if self._startTimeTmp:
             self.update()
-        return(self.accumulator)
+        return self.accumulator
 
     def name(self):
-        return(self._name)
+        return self._name
 
     def time(self):
-        return(self.elapsed().total_seconds())
+        return self.elapsed().total_seconds()
 
     def startTime(self):
         if self._startTime:
-            return(style_datetime_object(datetimeObject = self._startTime))
+            return style_datetime_object(datetimeObject = self._startTime)
         else:
-            return("none")
+            return "none"
 
     def stopTime(self):
         if self._stopTime:
-            return(style_datetime_object(datetimeObject = self._stopTime))
+            return style_datetime_object(datetimeObject = self._stopTime)
         else:
-            return("none")
+            return "none"
 
     def report(self):
         string = "clock attribute".ljust(39)      + "value"
@@ -283,7 +276,7 @@ class Clock(object):
         string += "\ntime stop (s)".ljust(40)     + self.stopTime()
         string += "\ntime elapsed (s)".ljust(40) + str(self.time())
         string += "\n"
-        return(string)
+        return string
 
     def printout(self):
         print(self.report())
@@ -299,9 +292,9 @@ def timer(function):
         clock     = Clock(name = function.__name__)
         result    = function(*args, **kwargs)
         clock.stop()
-        return(result)
+        return result
 
-    return(decoration)
+    return decoration
 
 class Clocks(object):
 
@@ -351,7 +344,7 @@ class Clocks(object):
                 string += "\n"
         else:
             string = "no clocks"
-        return(string)
+        return string
 
     def printout(
         self,
@@ -360,5 +353,88 @@ class Clocks(object):
         if style is None:
             style = self._defaultReportStyle
         print(self.report(style = style))
+
+def model_linear(
+    data = None
+    ):
+    n = len(data)
+    x_values         = []
+    y_values         = []
+    x_squared_values = []
+    xy_values        = []
+    for datum in data:
+        x = datum[0]
+        y = datum[1]
+        x_values.append(x)
+        y_values.append(y)
+        x_squared_values.append(x ** 2)
+        xy_values.append(x * y)
+    b1 = (sum(xy_values) - (sum(x_values) * sum(y_values)) / n) / \
+         (sum(x_squared_values) - (sum(x_values) ** 2) / n)
+    b0 = (sum(y_values) - b1 * sum(x_values)) / n
+    return (b0, b1)
+
+class Progress():
+
+    def __init__(
+        self
+        ):
+        self.data = []
+
+    def add_datum(
+        self,
+        fraction = None
+        ):
+        self.data.append((fraction, time_UNIX()))
+
+    def estimated_time_of_completion(
+        self
+        ):
+        if len(self.data) <= 1:
+            return 0
+        else:
+            model_values = model_linear(self.data)
+            b0 = model_values[0]
+            b1 = model_values[1]
+            x = 1
+            y = b0 + b1 * x
+            datetimeObject = datetime.datetime.fromtimestamp(int(y))
+            return datetimeObject
+
+    # estimated time of arrival
+    def ETA(
+        self
+        ):
+        if len(self.data) <= 1:
+            return style_datetime_object(
+                datetimeObject = datetime.datetime.now()
+            )
+        else:
+            return style_datetime_object(
+                datetimeObject = self.estimated_time_of_completion()
+            )
+
+    # estimated time remaining
+    def ETR(
+        self
+        ):
+        if len(self.data) <= 1:
+            return 0
+        else:
+            delta_time = self.estimated_time_of_completion() - datetime.datetime.now()
+            if delta_time.total_seconds() >= 0:
+                return delta_time.total_seconds()
+            else:
+                return 0
+
+    def fraction(
+        self
+        ):
+        return self.data[-1][0]
+
+    def percentage(
+        self
+        ):
+        return 100 * self.fraction()
 
 _main()
