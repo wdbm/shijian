@@ -18,6 +18,39 @@ def main():
         30,
         30,
         30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
         30
     ]
 
@@ -27,7 +60,7 @@ def main():
     for eventIndex, event in enumerate(list1):
         fraction = (eventIndex + 1) / numberOfEvents
         progress.add_datum(fraction = fraction)
-        time.sleep(2)
+        time.sleep(0.5)
         print("loaded {percentage:.2f}% of events; estimated completion time: {ETA} ({ETR:.2f} s)\r".format(
             percentage = progress.percentage(),
             ETA        = progress.ETA(),

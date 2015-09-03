@@ -31,7 +31,7 @@ from __future__ import division
 #                                                                              #
 ################################################################################
 
-version = "2015-09-03T1345Z"
+version = "2015-09-03T1428Z"
 
 import os
 import time
@@ -403,6 +403,8 @@ class Progress():
         ):
         self.data = []
         self.quickCalculation = False
+        self.updateRate = 1 # s
+        self.clock = Clock(name = "progress update clock")
 
     def engage_quick_calculation_mode(
         self
@@ -418,7 +420,16 @@ class Progress():
         self,
         fraction = None
         ):
-        self.data.append((fraction, time_UNIX()))
+        if len(self.data) == 0:
+            self.data.append((fraction, time_UNIX()))
+        elif self.quickCalculation is True:
+            time_duration_since_last_update = self.clock.time()
+            if time_duration_since_last_update >= self.updateRate:
+                self.data.append((fraction, time_UNIX()))
+                self.clock.reset()
+                self.clock.start()
+        else:
+            self.data.append((fraction, time_UNIX()))
 
     def estimated_time_of_completion(
         self
