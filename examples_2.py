@@ -23,6 +23,7 @@ def main():
 
     numberOfEvents = len(list1)
     progress = shijian.Progress()
+    progress.engage_quick_calculation_mode()
     for eventIndex, event in enumerate(list1):
         fraction = (eventIndex + 1) / numberOfEvents
         progress.add_datum(fraction = fraction)

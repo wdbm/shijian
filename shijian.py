@@ -31,7 +31,7 @@ from __future__ import division
 #                                                                              #
 ################################################################################
 
-version = "2015-09-03T1313Z"
+version = "2015-09-03T1345Z"
 
 import os
 import time
@@ -402,6 +402,17 @@ class Progress():
         self
         ):
         self.data = []
+        self.quickCalculation = False
+
+    def engage_quick_calculation_mode(
+        self
+        ):
+        self.quickCalculation = True
+
+    def disengage_quick_calculation_mode(
+        self
+        ):
+        self.quickCalculation = False
 
     def add_datum(
         self,
@@ -417,7 +428,7 @@ class Progress():
         else:
             model_values = model_linear(
                 self.data,
-                quickCalculation = True
+                quickCalculation = self.quickCalculation
             )
             b0 = model_values[0]
             b1 = model_values[1]
