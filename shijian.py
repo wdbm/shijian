@@ -31,7 +31,7 @@ from __future__ import division
 #                                                                              #
 ################################################################################
 
-version = "2015-08-25T0810Z"
+version = "2015-09-03T1313Z"
 
 import os
 import time
@@ -41,6 +41,7 @@ import inspect
 import functools
 import re
 import collections
+import math
 
 def _main():
     global clocks
@@ -354,9 +355,30 @@ class Clocks(object):
             style = self._defaultReportStyle
         print(self.report(style = style))
 
-def model_linear(
-    data = None
+def select_spread(
+    listOfElements   = None,
+    numberOfElements = None
     ):
+    # This function returns the specified number of elements of a list
+    # spread approximately evenly.
+    if len(listOfElements) <= numberOfElements:
+        return listOfElements
+    if numberOfElements == 0:
+        return []
+    if numberOfElements == 1:
+        return [listOfElements[int(round((len(listOfElements) - 1) / 2))]]
+    return \
+        [listOfElements[int(round((len(listOfElements) - 1) /\
+        (2 * numberOfElements)))]] +\
+        select_spread(listOfElements[int(round((len(listOfElements) - 1) /\
+        (numberOfElements))):], numberOfElements - 1)
+
+def model_linear(
+    data             = None,
+    quickCalculation = False
+    ):
+    if quickCalculation is True:
+        data = select_spread(data, 5)
     n = len(data)
     x_values         = []
     y_values         = []
@@ -393,7 +415,10 @@ class Progress():
         if len(self.data) <= 1:
             return 0
         else:
-            model_values = model_linear(self.data)
+            model_values = model_linear(
+                self.data,
+                quickCalculation = True
+            )
             b0 = model_values[0]
             b1 = model_values[1]
             x = 1

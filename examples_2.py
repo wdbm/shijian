@@ -21,13 +21,13 @@ def main():
         30
     ]
 
+    numberOfEvents = len(list1)
     progress = shijian.Progress()
-    numberOfElements = len(list1)
-    for index, element in enumerate(list1):
-        time.sleep(1)
-        fraction = (index + 1) / numberOfElements
+    for eventIndex, event in enumerate(list1):
+        fraction = (eventIndex + 1) / numberOfEvents
         progress.add_datum(fraction = fraction)
-        print("progress: {percentage:.2f}%, ETA: {ETA}, ETR: {ETR:.2f} s".format(
+        time.sleep(2)
+        print("loaded {percentage:.2f}% of events; estimated completion time: {ETA} ({ETR:.2f} s)\r".format(
             percentage = progress.percentage(),
             ETA        = progress.ETA(),
             ETR        = progress.ETR()
