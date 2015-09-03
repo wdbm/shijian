@@ -31,7 +31,7 @@ from __future__ import division
 #                                                                              #
 ################################################################################
 
-version = "2015-09-03T1428Z"
+version = "2015-09-03T1508Z"
 
 import os
 import time
@@ -378,7 +378,7 @@ def model_linear(
     quickCalculation = False
     ):
     if quickCalculation is True:
-        data = select_spread(data, 5)
+        data = select_spread(data, 10)
     n = len(data)
     x_values         = []
     y_values         = []
