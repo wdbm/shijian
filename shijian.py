@@ -31,7 +31,7 @@ from __future__ import division
 #                                                                              #
 ################################################################################
 
-version = "2015-09-03T1508Z"
+version = "2015-09-24T1512Z"
 
 import os
 import time
@@ -437,14 +437,17 @@ class Progress():
         if len(self.data) <= 1:
             return 0
         else:
-            model_values = model_linear(
-                self.data,
-                quickCalculation = self.quickCalculation
-            )
-            b0 = model_values[0]
-            b1 = model_values[1]
-            x = 1
-            y = b0 + b1 * x
+            try:
+                model_values = model_linear(
+                    self.data,
+                    quickCalculation = self.quickCalculation
+                )
+                b0 = model_values[0]
+                b1 = model_values[1]
+                x = 1
+                y = b0 + b1 * x
+            except:
+                y = 0
             datetimeObject = datetime.datetime.fromtimestamp(int(y))
             return datetimeObject
 
