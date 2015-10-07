@@ -31,7 +31,7 @@ from __future__ import division
 #                                                                              #
 ################################################################################
 
-version = "2015-09-24T1512Z"
+version = "2015-10-07T1522Z"
 
 import os
 import time
@@ -418,7 +418,8 @@ class Progress():
 
     def add_datum(
         self,
-        fraction = None
+        fraction = None,
+        style    = None
         ):
         if len(self.data) == 0:
             self.data.append((fraction, time_UNIX()))
@@ -430,6 +431,7 @@ class Progress():
                 self.clock.start()
         else:
             self.data.append((fraction, time_UNIX()))
+        return self.status(style = style)
 
     def estimated_time_of_completion(
         self
@@ -487,4 +489,14 @@ class Progress():
         ):
         return 100 * self.fraction()
 
+    def status(
+        self,
+        style = None
+        ):
+        if style is None:
+            return "{percentage:.2f}% complete; estimated completion time: {ETA} ({ETR:.2f} s)\r".format(
+                percentage = self.percentage(),
+                ETA        = self.ETA(),
+                ETR        = self.ETR()
+            )
 _main()

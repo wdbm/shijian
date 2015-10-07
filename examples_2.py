@@ -58,14 +58,8 @@ def main():
     progress = shijian.Progress()
     progress.engage_quick_calculation_mode()
     for eventIndex, event in enumerate(list1):
-        fraction = (eventIndex + 1) / numberOfEvents
-        progress.add_datum(fraction = fraction)
+        print(progress.add_datum(fraction = (eventIndex + 1) / numberOfEvents))
         time.sleep(0.5)
-        print("loaded {percentage:.2f}% of events; estimated completion time: {ETA} ({ETR:.2f} s)\r".format(
-            percentage = progress.percentage(),
-            ETA        = progress.ETA(),
-            ETR        = progress.ETR()
-        ))
 
 if __name__ == '__main__':
     main()
