@@ -31,11 +31,11 @@ from __future__ import division
 #                                                                              #
 ################################################################################
 
-version = "2015-10-07T1522Z"
+version = "2015-10-29T1605Z"
 
 import os
 import time
-import uuid as uuid
+import uuid
 import datetime
 import inspect
 import functools
@@ -103,8 +103,12 @@ def uniqueNumber(
         if not uniqueNumbers3SignificantFigures:
             uniqueNumbers3SignificantFigures.append(initialNumber)
         else:
-            uniqueNumbers3SignificantFigures.append(uniqueNumbers3SignificantFigures[-1] + 1)
-        if style == "integer 3 significant figures" and uniqueNumbers3SignificantFigures[-1] > 999:
+            uniqueNumbers3SignificantFigures.append(
+                uniqueNumbers3SignificantFigures[-1] + 1
+            )
+        if\
+            style == "integer 3 significant figures" and\
+            uniqueNumbers3SignificantFigures[-1] > 999:
             raise Exception
         return uniqueNumbers3SignificantFigures[-1]
     # mode: integer
@@ -401,10 +405,10 @@ class Progress():
     def __init__(
         self
         ):
-        self.data = []
+        self.data             = []
         self.quickCalculation = False
-        self.updateRate = 1 # s
-        self.clock = Clock(name = "progress update clock")
+        self.updateRate       = 1 # s
+        self.clock            = Clock(name = "progress update clock")
 
     def engage_quick_calculation_mode(
         self
@@ -494,7 +498,10 @@ class Progress():
         style = None
         ):
         if style is None:
-            return "{percentage:.2f}% complete; estimated completion time: {ETA} ({ETR:.2f} s)\r".format(
+            message =\
+                "{percentage:.2f}% complete; " +\
+                "estimated completion time: {ETA} ({ETR:.2f} s)\r"
+            return message.format(
                 percentage = self.percentage(),
                 ETA        = self.ETA(),
                 ETR        = self.ETR()
