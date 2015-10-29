@@ -19,12 +19,14 @@ def main():
         author           = "Will Breaden Madden",
         author_email     = "w.bm@cern.ch",
         license         = "GPLv3",
-        package_data     = "": [
-            "*.txt",
-            "*.md",
-            "*.rst",
-            "*.py"
-        ]
+        package_data     = {
+            "": [
+                "*.txt",
+                "*.md",
+                "*.rst",
+                "*.py"
+            ]
+        }
     )
 
 if __name__ == "__main__":
