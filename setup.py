@@ -3,15 +3,14 @@
 
 import os
 import setuptools
-import pypandoc
 
 def main():
 
     setuptools.setup(
         name             = "shijian",
-        version          = "2015.10.30.1635",
+        version          = "2015.10.30.1948",
         description      = "change and time utilities",
-        long_description = pypandoc.convert("README.md", "rst"),
+        long_description = Markdown_to_reStructuredText("README.md"),
         url              = "https://github.com/wdbm/shijian",
         author           = "Will Breaden Madden",
         author_email     = "w.bm@cern.ch",
@@ -26,6 +25,14 @@ def main():
 def read(*paths):
     with open(os.path.join(*paths), "r") as filename:
         return filename.read()
+
+def Markdown_to_reStructuredText(filename):
+    try:
+        import pypandoc
+        return pypandoc.convert(filename, "rst")
+    except:
+        print("pypandoc not found; long description could be corrupted")
+        return read(filename)
 
 if __name__ == "__main__":
     main()
