@@ -9,7 +9,7 @@ def main():
 
     setuptools.setup(
         name             = "shijian",
-        version          = "2015.10.30.1623",
+        version          = "2015.10.30.1635",
         description      = "change and time utilities",
         long_description = pypandoc.convert("README.md", "rst"),
         url              = "https://github.com/wdbm/shijian",

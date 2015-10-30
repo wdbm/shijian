@@ -8,13 +8,13 @@ Python change and time functions
 
 Function ```style_datetime_object``` accepts a ```datetime``` object and returns a string representation of a time. The default style is "YYYY-MM-DDTHHMMSS" and it can be changed by argument. Styles available are as follows:
 
-|**time representation***|**comment**|
-|---|---|
-|YYYY-MM-DDTHHMMSSZ|filename safe (default)|
-|YYYY-MM-DDTHHMMSSMMMMMMZ|microseconds|
-|YYYY-MM-DD HH:MM:SS UTC|elegant|
-|UNIX time S.SSSSSS|UNIX time in seconds with second fraction|
-|UNIX time S|UNIX time in seconds rounded|
+|**time representation** |**comment**                              |
+|------------------------|-----------------------------------------|
+|YYYY-MM-DDTHHMMSSZ      |filename safe (default)                  |
+|YYYY-MM-DDTHHMMSSMMMMMMZ|microseconds                             |
+|YYYY-MM-DD HH:MM:SS UTC |elegant                                  |
+|UNIX time S.SSSSSS      |UNIX time in seconds with second fraction|
+|UNIX time S             |UNIX time in seconds rounded             |
 
 Functions ```time_UTC``` and ```time_UNIX``` are sorts of special cases of function ```style_datetime_object``` which return representations of the current time (as opposed to any specified datetime object) in a style. For ```time_UTC```, the default style is "YYYY-MM-DDTHHMMSS" and for ```time_UNIX```, the default style is "UNIX time S" and these styles can be changed by argument.
 
