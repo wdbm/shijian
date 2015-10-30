@@ -15,7 +15,7 @@ def main():
         url              = "https://github.com/wdbm/shijian",
         author           = "Will Breaden Madden",
         author_email     = "w.bm@cern.ch",
-        license         = "GPLv3",
+        license          = "GPLv3",
         py_modules       = ["shijian"],
         entry_points     = """
             [console_scripts]
