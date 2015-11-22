@@ -31,7 +31,7 @@ from __future__ import division
 #                                                                              #
 ################################################################################
 
-version = "2015-10-30T1623Z"
+version = "2015-11-22T1716Z"
 
 import os
 import time
@@ -198,6 +198,17 @@ def find_file_sequences(
 
 def UID():
     return str(uuid.uuid4())
+
+## @brief return a list of files, directories and subdirectories at a
+## specified directory
+def directory_listing(
+    directory = ".",
+    ):
+    files_list = []
+    for root, directories, filenames in os.walk(directory):
+        for filename in filenames:
+            files_list.append(os.path.join(root, filename))
+    return files_list
 
 class Clock(object):
 
