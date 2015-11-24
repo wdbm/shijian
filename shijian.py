@@ -31,7 +31,7 @@ from __future__ import division
 #                                                                              #
 ################################################################################
 
-version = "2015-11-22T1716Z"
+version = "2015-11-24T1517Z"
 
 import os
 import time
@@ -374,8 +374,10 @@ def select_spread(
     listOfElements   = None,
     numberOfElements = None
     ):
-    # This function returns the specified number of elements of a list
-    # spread approximately evenly.
+    """
+    This function returns the specified number of elements of a list spread
+    approximately evenly.
+    """
     if len(listOfElements) <= numberOfElements:
         return listOfElements
     if numberOfElements == 0:
@@ -387,6 +389,31 @@ def select_spread(
         (2 * numberOfElements)))]] +\
         select_spread(listOfElements[int(round((len(listOfElements) - 1) /\
         (numberOfElements))):], numberOfElements - 1)
+
+def split_list(
+    list_object = None,
+    granularity = None
+    ):
+    """
+    This function splits a list into a specified number of lists. It returns a
+    list of lists that correspond to these parts. Negative numbers of parts are
+    not accepted and numbers of parts greater than the number of elements in the
+    list result in the maximum possible number of lists being returned.
+    """
+    if granularity < 0:
+        raise Exception("negative granularity")
+    mean_length = len(list_object) / float(granularity)
+    split_list_object = []
+    last_length = float(0)
+    if len(list_object) > granularity:
+        while last_length < len(list_object):
+            split_list_object.append(
+                list_object[int(last_length):int(last_length + mean_length)]
+            )
+            last_length += mean_length
+    else:
+        split_list_object = [[element] for element in list_object]
+    return split_list_object
 
 def model_linear(
     data             = None,
