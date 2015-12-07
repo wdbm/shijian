@@ -31,7 +31,7 @@ from __future__ import division
 #                                                                              #
 ################################################################################
 
-version = "2015-11-24T1517Z"
+version = "2015-12-07T1819Z"
 
 import os
 import time
@@ -209,6 +209,48 @@ def directory_listing(
         for filename in filenames:
             files_list.append(os.path.join(root, filename))
     return files_list
+
+def normalize(
+    x,
+    summation = None
+    ):
+    if summation is None:
+        summation = sum(x) # normalize to unity
+    return [element/summation for element in x]
+
+def rescale(
+    x,
+    minimum = 0,
+    maximum = 1
+    ):
+    return [
+        minimum + (element - min(x)) * ((maximum - minimum)\
+        / (max(x) - min(x))) for element in x
+    ]
+
+def indices_of_list_element_duplicates(x):
+    seen = set()
+    for index, element in enumerate(x):
+        if isinstance(element, list):
+            element = tuple(element)
+        if element not in seen:
+            seen.add(element)
+        else:
+            yield index
+
+def unique_list_elements(x):
+    unique_elements = []
+    for element in x:
+        if element not in unique_elements:
+            unique_elements.append(element)
+    return unique_elements
+
+def composite_variable(x):
+    k = len(x) + 1
+    variable = 0
+    for index, element in enumerate(x):
+        variable += k**(index - 1) * element
+    return variable
 
 class Clock(object):
 
