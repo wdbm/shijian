@@ -31,13 +31,14 @@ from __future__ import division
 #                                                                              #
 ################################################################################
 
-version = "2015-12-07T1819Z"
+version = "2015-12-08T1040Z"
 
 import os
 import time
 import uuid
 import datetime
 import inspect
+import pickle
 import functools
 import re
 import collections
@@ -161,6 +162,26 @@ def proposeFileName(
                                    str(count) + \
                                    fileNameExtension
     return fileNameProposed
+
+def export_object(
+    x
+    filename  = None,
+    overwrite = False
+    ):
+    filename = proposeFileName(
+        fileName  = filename,
+        overwrite = overwrite
+    )
+    pickle.dump(x, open(filename, "wb"))
+
+def import_object(
+    filename  = None
+    ):
+    filename = proposeFileName(
+        fileName  = filename,
+        overwrite = overwrite
+    )
+    return pickle.load(open(filename, "rb"))
 
 ## @brief return a naturally-sorted list
 #  @detail This function returns a naturally-sorted list from an input list.
