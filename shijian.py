@@ -31,7 +31,7 @@ from __future__ import division
 #                                                                              #
 ################################################################################
 
-version = "2015-12-08T1040Z"
+version = "2016-01-11T2111Z"
 
 import os
 import time
@@ -164,7 +164,7 @@ def proposeFileName(
     return fileNameProposed
 
 def export_object(
-    x
+    x,
     filename  = None,
     overwrite = False
     ):
