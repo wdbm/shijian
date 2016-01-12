@@ -31,7 +31,7 @@ from __future__ import division
 #                                                                              #
 ################################################################################
 
-version = "2016-01-11T2111Z"
+version = "2016-01-12T1720Z"
 
 import os
 import time
@@ -52,77 +52,77 @@ def time_UNIX(
     style = "UNIX time S"
     ):
     return style_datetime_object(
-        datetimeObject = datetime.datetime.utcnow(),
-        style = style
+        datetime_object = datetime.datetime.utcnow(),
+        style           = style
     )
 
 def time_UTC(
     style = None
     ):
     return style_datetime_object(
-        datetimeObject = datetime.datetime.utcnow(),
-        style = style
+        datetime_object = datetime.datetime.utcnow(),
+        style           = style
     )
 
 def style_datetime_object(
-    datetimeObject = None,
-    style          = "YYYY-MM-DDTHHMMSS"
+    datetime_object = None,
+    style           = "YYYY-MM-DDTHHMMSS"
     ):
     # filename safe
     if style == "YYYY-MM-DDTHHMMSSZ":
-        return datetimeObject.strftime('%Y-%m-%dT%H%M%SZ')
+        return datetime_object.strftime("%Y-%m-%dT%H%M%SZ")
     # microseconds
     elif style == "YYYY-MM-DDTHHMMSSMMMMMMZ":
-        return datetimeObject.strftime('%Y-%m-%dT%H%M%S%fZ')
+        return datetime_object.strftime("%Y-%m-%dT%H%M%S%fZ")
     # elegant
     elif style == "YYYY-MM-DD HH:MM:SS UTC":
-        return datetimeObject.strftime('%Y-%m-%d %H:%M:%SZ')
+        return datetime_object.strftime("%Y-%m-%d %H:%M:%SZ")
     # UNIX time in seconds with second fraction
     elif style == "UNIX time S.SSSSSS":
-        return (datetimeObject -\
+        return (datetime_object -\
             datetime.datetime.utcfromtimestamp(0)).total_seconds()
     # UNIX time in seconds rounded
     elif style == "UNIX time S":
-        return int((datetimeObject -\
+        return int((datetime_object -\
             datetime.datetime.utcfromtimestamp(0)).total_seconds())
     # filename safe
     else:
-        return datetimeObject.strftime('%Y-%m-%dT%H%M%SZ')
+        return datetime_object.strftime("%Y-%m-%dT%H%M%SZ")
 
-def unique3DigitNumber():
-    return uniqueNumber(style ="integer 3 significant figures")
+def unique_3_digit_number():
+    return unique_number(style = "integer 3 significant figures")
 
-def uniqueNumber(
+def unique_number(
     style = None
     ):
     # mode: integer 3 significant figures
     if style == "integer 3 significant figures":
-        initialNumber = 100
-        if "uniqueNumbers3SignificantFigures" not in globals():
-            global uniqueNumbers3SignificantFigures
-            uniqueNumbers3SignificantFigures = []
-        if not uniqueNumbers3SignificantFigures:
-            uniqueNumbers3SignificantFigures.append(initialNumber)
+        initial_number = 100
+        if "unique_numbers_3_significant_figures" not in globals():
+            global unique_numbers_3_significant_figures
+            unique_numbers_3_significant_figures = []
+        if not unique_numbers_3_significant_figures:
+            unique_numbers_3_significant_figures.append(initial_number)
         else:
-            uniqueNumbers3SignificantFigures.append(
-                uniqueNumbers3SignificantFigures[-1] + 1
+            unique_numbers_3_significant_figures.append(
+                unique_numbers_3_significant_figures[-1] + 1
             )
         if\
-            style == "integer 3 significant figures" and\
-            uniqueNumbers3SignificantFigures[-1] > 999:
+            style == "integer 3 significant figures" and \
+            unique_numbers_3_significant_figures[-1] > 999:
             raise Exception
-        return uniqueNumbers3SignificantFigures[-1]
+        return unique_numbers_3_significant_figures[-1]
     # mode: integer
     else:
-        initialNumber = 1
-        if "uniqueNumbers" not in globals():
-            global uniqueNumbers
-            uniqueNumbers = []
-        if not uniqueNumbers:
-            uniqueNumbers.append(initialNumber)
+        initial_number = 1
+        if "unique_numbers" not in globals():
+            global unique_numbers
+            unique_numbers = []
+        if not unique_numbers:
+            unique_numbers.append(initial_number)
         else:
-            uniqueNumbers.append(uniqueNumbers[-1] + 1)
-        return uniqueNumbers[-1]
+            unique_numbers.append(unique_numbers[-1] + 1)
+        return unique_numbers[-1]
 
 ## @brief propose a filename
 #  @detail This function returns a filename string. If a default filename is not
@@ -134,42 +134,42 @@ def uniqueNumber(
 #  that would not cause overwriting of an existing file. The function can be set
 #  to overwrite instead of using the default overwrite protection behaviour.
 #  @return filename string
-def proposeFileName(
-    fileName  = None,
+def propose_filename(
+    filename  = None,
     overwrite = False
     ):
     # If no file name is specified, generate one.
-    if not fileName:
-        fileName = time_UTC()
-    fileNameProposed = fileName
+    if not filename:
+        filename = time_UTC()
+    filename_proposed = filename
     if not overwrite:
         count = 0
-        while os.path.exists(fileNameProposed):
+        while os.path.exists(filename_proposed):
             count = count + 1
-            fileNameDirectory = os.path.dirname(fileName)
-            fileNameBase = os.path.splitext(os.path.basename(fileName))[0]
-            fileNameExtension = os.path.splitext(os.path.basename(fileName))[1]
-            if fileNameDirectory:
-                fileNameProposed = fileNameDirectory + \
-                                   "/" + \
-                                   fileNameBase + \
-                                   "_" + \
-                                   str(count) + \
-                                   fileNameExtension
+            filename_directory = os.path.dirname(filename)
+            filename_base = os.path.splitext(os.path.basename(filename))[0]
+            filename_extension = os.path.splitext(os.path.basename(filename))[1]
+            if filename_directory:
+                filename_proposed = filename_directory + \
+                                    "/"                + \
+                                    filename_base      + \
+                                    "_"                + \
+                                    str(count)         + \
+                                    filename_extension
             else:
-                fileNameProposed = fileNameBase + \
-                                   "_" + \
-                                   str(count) + \
-                                   fileNameExtension
-    return fileNameProposed
+                filename_proposed = filename_base      + \
+                                    "_"                + \
+                                    str(count)         + \
+                                    filename_extension
+    return filename_proposed
 
 def export_object(
     x,
     filename  = None,
     overwrite = False
     ):
-    filename = proposeFileName(
-        fileName  = filename,
+    filename = propose_filename(
+        filename  = filename,
         overwrite = overwrite
     )
     pickle.dump(x, open(filename, "wb"))
@@ -177,51 +177,51 @@ def export_object(
 def import_object(
     filename  = None
     ):
-    filename = proposeFileName(
-        fileName  = filename,
+    filename = propose_filename(
+        filename  = filename,
         overwrite = overwrite
     )
     return pickle.load(open(filename, "rb"))
 
 ## @brief return a naturally-sorted list
 #  @detail This function returns a naturally-sorted list from an input list.
-def natural_sort(listObject): 
+def natural_sort(list_object): 
     convert = lambda text: int(text) if text.isdigit() else text.lower() 
     alphanumeric_key = lambda key: [
         convert(text) for text in re.split("([0-9]+)", key)
     ]
-    return sorted(listObject, key = alphanumeric_key)
+    return sorted(list_object, key = alphanumeric_key)
 
 ## @brief return a naturally-sorted list of filenames that are in a sequence or
 ## a dictionary of lists of filenames that are in a sequence
 def find_file_sequences(
-    extension               = "png",
-    directory               = ".",
-    returnFirstSequenceOnly = True,
+    extension                  = "png",
+    directory                  = ".",
+    return_first_sequence_only = True,
     ):
-    filenamesOfDirectory = os.listdir(directory)
-    filenamesFound = [
-        filename for filename in filenamesOfDirectory if re.match(
+    filenames_of_directory = os.listdir(directory)
+    filenames_found = [
+        filename for filename in filenames_of_directory if re.match(
             r".*\d+.*\." + extension,
             filename
         )
     ]
-    filenameSequences = collections.defaultdict(list)
-    for filename in filenamesFound:
+    filename_sequences = collections.defaultdict(list)
+    for filename in filenames_found:
         pattern = re.sub("\d+", "XXX", filename)
-        filenameSequences[pattern].append(filename)
-    if returnFirstSequenceOnly is True:
-        firstKeyIdentified = filenameSequences.iterkeys().next()
-        filenameSequence = natural_sort(filenameSequences[firstKeyIdentified])
-        return filenameSequence
+        filename_sequences[pattern].append(filename)
+    if return_first_sequence_only is True:
+        first_key_identified = filename_sequences.iterkeys().next()
+        filename_sequence = natural_sort(filename_sequences[first_key_identified])
+        return filename_sequence
     else:
-        return filenameSequences
+        return filename_sequences
 
 def UID():
     return str(uuid.uuid4())
 
-## @brief return a list of files, directories and subdirectories at a
-## specified directory
+## @brief return a list of files, directories and subdirectories at a specified
+## directory
 def directory_listing(
     directory = ".",
     ):
@@ -277,18 +277,18 @@ class Clock(object):
 
     def __init__(
         self,
-        name               = None,
-        start              = True
+        name                 = None,
+        start                = True
         ):
-        self._name         = name
-        self._start        = start # Boolean start clock on instantiation
-        self._startTime    = None # internal (value to return)
-        self._startTimeTmp = None # internal (value for calculations)
-        self._stopTime     = None # internal (value to return)
-        self._updateTime   = None # internal
+        self._name           = name
+        self._start          = start # Boolean start clock on instantiation
+        self._start_time     = None  # internal (value to return)
+        self._start_time_tmp = None  # internal (value for calculations)
+        self._stop_time      = None  # internal (value to return)
+        self._update_time    = None  # internal
         # If no name is specified, generate a unique one.
         if self._name is None:
-            self._name     = UID()
+            self._name = UID()
         # If a global clock list is detected, add a clock instance to it.
         if "clocks" in globals():
             clocks.add(self)
@@ -297,36 +297,36 @@ class Clock(object):
             self.start()
 
     def start(self):
-        self._startTimeTmp = datetime.datetime.utcnow()
-        self._startTime    = datetime.datetime.utcnow()
+        self._start_time_tmp = datetime.datetime.utcnow()
+        self._start_time     = datetime.datetime.utcnow()
 
     def stop(self):
         self.update()
-        self._updateTime   = None
-        self._startTimeTmp = None
-        self._stopTime     = datetime.datetime.utcnow()
+        self._update_time    = None
+        self._start_time_tmp = None
+        self._stop_time      = datetime.datetime.utcnow()
 
     # Update the clock accumulator.
     def update(self):
-        if self._updateTime:        
+        if self._update_time:        
             self.accumulator += (
-                datetime.datetime.utcnow() - self._updateTime
+                datetime.datetime.utcnow() - self._update_time
             )
         else:
             self.accumulator += (
-                datetime.datetime.utcnow() - self._startTimeTmp
+                datetime.datetime.utcnow() - self._start_time_tmp
             )
-        self._updateTime   = datetime.datetime.utcnow()
+        self._update_time = datetime.datetime.utcnow()
 
     def reset(self):
-        self.accumulator   = datetime.timedelta(0)
-        self._startTimeTmp = None
+        self.accumulator     = datetime.timedelta(0)
+        self._start_time_tmp = None
 
     # If the clock has a start time, add the difference between now and the
     # start time to the accumulator and return the accumulation. If the clock
     # does not have a start time, return the accumulation.
     def elapsed(self):
-        if self._startTimeTmp:
+        if self._start_time_tmp:
             self.update()
         return self.accumulator
 
@@ -336,23 +336,23 @@ class Clock(object):
     def time(self):
         return self.elapsed().total_seconds()
 
-    def startTime(self):
-        if self._startTime:
-            return style_datetime_object(datetimeObject = self._startTime)
+    def start_time(self):
+        if self._start_time:
+            return style_datetime_object(datetime_object = self._start_time)
         else:
             return "none"
 
-    def stopTime(self):
-        if self._stopTime:
-            return style_datetime_object(datetimeObject = self._stopTime)
+    def stop_time(self):
+        if self._stop_time:
+            return style_datetime_object(datetime_object = self._stop_time)
         else:
             return "none"
 
     def report(self):
-        string = "clock attribute".ljust(39)      + "value"
+        string = "clock attribute".ljust(39)     + "value"
         string += "\nname".ljust(40)             + self.name()
-        string += "\ntime start (s)".ljust(40)    + self.startTime()
-        string += "\ntime stop (s)".ljust(40)     + self.stopTime()
+        string += "\ntime start (s)".ljust(40)   + self.start_time()
+        string += "\ntime stop (s)".ljust(40)    + self.stop_time()
         string += "\ntime elapsed (s)".ljust(40) + str(self.time())
         string += "\n"
         return string
@@ -380,46 +380,46 @@ class Clocks(object):
     def __init__(
         self
         ):
-        self._listOfClocks       = []
-        self._defaultReportStyle = "statistics"
+        self._list_of_clocks       = []
+        self._default_report_style = "statistics"
 
     def add(
         self,
         clock
         ):
-        self._listOfClocks.append(clock)
+        self._list_of_clocks.append(clock)
 
     def report(
         self,
         style = None
         ):
         if style is None:
-            style = self._defaultReportStyle
-        if self._listOfClocks != []:
+            style = self._default_report_style
+        if self._list_of_clocks != []:
             if style == "statistics":
                 # Create a dictionary of clock types with corresponding lists of
                 # times for all instances.
-                dictionaryOfClockTypes = {}
+                dictionary_of_clock_types = {}
                 # Get the names of all clocks and add them to the dictionary.
-                for clock in self._listOfClocks:
-                    dictionaryOfClockTypes[clock.name()] = []
+                for clock in self._list_of_clocks:
+                    dictionary_of_clock_types[clock.name()] = []
                 # Record the values of all clocks for their respective names in
                 # the dictionary.
-                for clock in self._listOfClocks:
-                    dictionaryOfClockTypes[clock.name()].append(clock.time())
+                for clock in self._list_of_clocks:
+                    dictionary_of_clock_types[clock.name()].append(clock.time())
                 # Create a report, calculating the average value for each clock
                 # type.
                 string = "clock type".ljust(39) + "mean time (s)"
-                for name, values in dictionaryOfClockTypes.items():
+                for name, values in dictionary_of_clock_types.items():
                     string += "\n" +\
-                              str(name).ljust(39) + str(sum(values)/len(values))
+                        str(name).ljust(39) + str(sum(values)/len(values))
                 string += "\n"
             elif style == "full":
                 # Create a report, listing the values of all clocks.
                 string = "clock".ljust(39) + "time (s)"
-                for clock in self._listOfClocks:
+                for clock in self._list_of_clocks:
                     string += "\n" +\
-                              str(clock.name()).ljust(39) + str(clock.time())
+                        str(clock.name()).ljust(39) + str(clock.time())
                 string += "\n"
         else:
             string = "no clocks"
@@ -430,28 +430,28 @@ class Clocks(object):
         style = None
         ):
         if style is None:
-            style = self._defaultReportStyle
+            style = self._default_report_style
         print(self.report(style = style))
 
 def select_spread(
-    listOfElements   = None,
-    numberOfElements = None
+    list_of_elements   = None,
+    number_of_elements = None
     ):
     """
     This function returns the specified number of elements of a list spread
     approximately evenly.
     """
-    if len(listOfElements) <= numberOfElements:
-        return listOfElements
-    if numberOfElements == 0:
+    if len(list_of_elements) <= number_of_elements:
+        return list_of_elements
+    if number_of_elements == 0:
         return []
-    if numberOfElements == 1:
-        return [listOfElements[int(round((len(listOfElements) - 1) / 2))]]
+    if number_of_elements == 1:
+        return [list_of_elements[int(round((len(list_of_elements) - 1) / 2))]]
     return \
-        [listOfElements[int(round((len(listOfElements) - 1) /\
-        (2 * numberOfElements)))]] +\
-        select_spread(listOfElements[int(round((len(listOfElements) - 1) /\
-        (numberOfElements))):], numberOfElements - 1)
+        [list_of_elements[int(round((len(list_of_elements) - 1) /\
+        (2 * number_of_elements)))]] +\
+        select_spread(list_of_elements[int(round((len(list_of_elements) - 1) /\
+        (number_of_elements))):], number_of_elements - 1)
 
 def split_list(
     list_object = None,
@@ -479,10 +479,10 @@ def split_list(
     return split_list_object
 
 def model_linear(
-    data             = None,
-    quickCalculation = False
+    data              = None,
+    quick_calculation = False
     ):
-    if quickCalculation is True:
+    if quick_calculation is True:
         data = select_spread(data, 10)
     n = len(data)
     x_values         = []
@@ -506,20 +506,20 @@ class Progress():
     def __init__(
         self
         ):
-        self.data             = []
-        self.quickCalculation = False
-        self.updateRate       = 1 # s
-        self.clock            = Clock(name = "progress update clock")
+        self.data              = []
+        self.quick_calculation = False
+        self.update_rate       = 1 # s
+        self.clock             = Clock(name = "progress update clock")
 
     def engage_quick_calculation_mode(
         self
         ):
-        self.quickCalculation = True
+        self.quick_calculation = True
 
     def disengage_quick_calculation_mode(
         self
         ):
-        self.quickCalculation = False
+        self.quick_calculation = False
 
     def add_datum(
         self,
@@ -528,9 +528,9 @@ class Progress():
         ):
         if len(self.data) == 0:
             self.data.append((fraction, time_UNIX()))
-        elif self.quickCalculation is True:
+        elif self.quick_calculation is True:
             time_duration_since_last_update = self.clock.time()
-            if time_duration_since_last_update >= self.updateRate:
+            if time_duration_since_last_update >= self.update_rate:
                 self.data.append((fraction, time_UNIX()))
                 self.clock.reset()
                 self.clock.start()
@@ -547,7 +547,7 @@ class Progress():
             try:
                 model_values = model_linear(
                     self.data,
-                    quickCalculation = self.quickCalculation
+                    quick_calculation = self.quick_calculation
                 )
                 b0 = model_values[0]
                 b1 = model_values[1]
@@ -555,8 +555,8 @@ class Progress():
                 y = b0 + b1 * x
             except:
                 y = 0
-            datetimeObject = datetime.datetime.fromtimestamp(int(y))
-            return datetimeObject
+            datetime_object = datetime.datetime.fromtimestamp(int(y))
+            return datetime_object
 
     # estimated time of arrival
     def ETA(
@@ -564,11 +564,11 @@ class Progress():
         ):
         if len(self.data) <= 1:
             return style_datetime_object(
-                datetimeObject = datetime.datetime.now()
+                datetime_object = datetime.datetime.now()
             )
         else:
             return style_datetime_object(
-                datetimeObject = self.estimated_time_of_completion()
+                datetime_object = self.estimated_time_of_completion()
             )
 
     # estimated time remaining
@@ -578,7 +578,8 @@ class Progress():
         if len(self.data) <= 1:
             return 0
         else:
-            delta_time = self.estimated_time_of_completion() - datetime.datetime.now()
+            delta_time = \
+                self.estimated_time_of_completion() - datetime.datetime.now()
             if delta_time.total_seconds() >= 0:
                 return delta_time.total_seconds()
             else:

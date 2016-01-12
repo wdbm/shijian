@@ -6,7 +6,7 @@ import time
 
 def main():
 
-    list1 = [
+    list_1 = [
         30,
         30,
         30,
@@ -54,11 +54,11 @@ def main():
         30
     ]
 
-    numberOfEvents = len(list1)
+    number_of_events = len(list_1)
     progress = shijian.Progress()
     progress.engage_quick_calculation_mode()
-    for eventIndex, event in enumerate(list1):
-        print(progress.add_datum(fraction = (eventIndex + 1) / numberOfEvents))
+    for event_index, event in enumerate(list_1):
+        print(progress.add_datum(fraction = (event_index + 1) / number_of_events))
         time.sleep(0.5)
 
 if __name__ == '__main__':
