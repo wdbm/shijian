@@ -31,7 +31,7 @@ from __future__ import division
 #                                                                              #
 ################################################################################
 
-version = "2016-01-12T1720Z"
+version = "2016-01-15T2317Z"
 
 import os
 import time
@@ -89,189 +89,20 @@ def style_datetime_object(
     else:
         return datetime_object.strftime("%Y-%m-%dT%H%M%SZ")
 
-def unique_3_digit_number():
-    return unique_number(style = "integer 3 significant figures")
+def timer(function):
 
-def unique_number(
-    style = None
-    ):
-    # mode: integer 3 significant figures
-    if style == "integer 3 significant figures":
-        initial_number = 100
-        if "unique_numbers_3_significant_figures" not in globals():
-            global unique_numbers_3_significant_figures
-            unique_numbers_3_significant_figures = []
-        if not unique_numbers_3_significant_figures:
-            unique_numbers_3_significant_figures.append(initial_number)
-        else:
-            unique_numbers_3_significant_figures.append(
-                unique_numbers_3_significant_figures[-1] + 1
-            )
-        if\
-            style == "integer 3 significant figures" and \
-            unique_numbers_3_significant_figures[-1] > 999:
-            raise Exception
-        return unique_numbers_3_significant_figures[-1]
-    # mode: integer
-    else:
-        initial_number = 1
-        if "unique_numbers" not in globals():
-            global unique_numbers
-            unique_numbers = []
-        if not unique_numbers:
-            unique_numbers.append(initial_number)
-        else:
-            unique_numbers.append(unique_numbers[-1] + 1)
-        return unique_numbers[-1]
+    @functools.wraps(function)
+    def decoration(
+        *args,
+        **kwargs
+        ):
+        arguments = inspect.getcallargs(function, *args, **kwargs)
+        clock     = Clock(name = function.__name__)
+        result    = function(*args, **kwargs)
+        clock.stop()
+        return result
 
-## @brief propose a filename
-#  @detail This function returns a filename string. If a default filename is not
-#  specified, the function generates one based on the current time. If a default
-#  filename is specified, the function uses it as the default filename. By
-#  default, the function then checks to see if using the filename would cause
-#  overwriting of an existing file. If overwriting is possible, the function
-#  appends an integer to the filename in a loop in order to generate a filename
-#  that would not cause overwriting of an existing file. The function can be set
-#  to overwrite instead of using the default overwrite protection behaviour.
-#  @return filename string
-def propose_filename(
-    filename  = None,
-    overwrite = False
-    ):
-    # If no file name is specified, generate one.
-    if not filename:
-        filename = time_UTC()
-    filename_proposed = filename
-    if not overwrite:
-        count = 0
-        while os.path.exists(filename_proposed):
-            count = count + 1
-            filename_directory = os.path.dirname(filename)
-            filename_base = os.path.splitext(os.path.basename(filename))[0]
-            filename_extension = os.path.splitext(os.path.basename(filename))[1]
-            if filename_directory:
-                filename_proposed = filename_directory + \
-                                    "/"                + \
-                                    filename_base      + \
-                                    "_"                + \
-                                    str(count)         + \
-                                    filename_extension
-            else:
-                filename_proposed = filename_base      + \
-                                    "_"                + \
-                                    str(count)         + \
-                                    filename_extension
-    return filename_proposed
-
-def export_object(
-    x,
-    filename  = None,
-    overwrite = False
-    ):
-    filename = propose_filename(
-        filename  = filename,
-        overwrite = overwrite
-    )
-    pickle.dump(x, open(filename, "wb"))
-
-def import_object(
-    filename  = None
-    ):
-    filename = propose_filename(
-        filename  = filename,
-        overwrite = overwrite
-    )
-    return pickle.load(open(filename, "rb"))
-
-## @brief return a naturally-sorted list
-#  @detail This function returns a naturally-sorted list from an input list.
-def natural_sort(list_object): 
-    convert = lambda text: int(text) if text.isdigit() else text.lower() 
-    alphanumeric_key = lambda key: [
-        convert(text) for text in re.split("([0-9]+)", key)
-    ]
-    return sorted(list_object, key = alphanumeric_key)
-
-## @brief return a naturally-sorted list of filenames that are in a sequence or
-## a dictionary of lists of filenames that are in a sequence
-def find_file_sequences(
-    extension                  = "png",
-    directory                  = ".",
-    return_first_sequence_only = True,
-    ):
-    filenames_of_directory = os.listdir(directory)
-    filenames_found = [
-        filename for filename in filenames_of_directory if re.match(
-            r".*\d+.*\." + extension,
-            filename
-        )
-    ]
-    filename_sequences = collections.defaultdict(list)
-    for filename in filenames_found:
-        pattern = re.sub("\d+", "XXX", filename)
-        filename_sequences[pattern].append(filename)
-    if return_first_sequence_only is True:
-        first_key_identified = filename_sequences.iterkeys().next()
-        filename_sequence = natural_sort(filename_sequences[first_key_identified])
-        return filename_sequence
-    else:
-        return filename_sequences
-
-def UID():
-    return str(uuid.uuid4())
-
-## @brief return a list of files, directories and subdirectories at a specified
-## directory
-def directory_listing(
-    directory = ".",
-    ):
-    files_list = []
-    for root, directories, filenames in os.walk(directory):
-        for filename in filenames:
-            files_list.append(os.path.join(root, filename))
-    return files_list
-
-def normalize(
-    x,
-    summation = None
-    ):
-    if summation is None:
-        summation = sum(x) # normalize to unity
-    return [element/summation for element in x]
-
-def rescale(
-    x,
-    minimum = 0,
-    maximum = 1
-    ):
-    return [
-        minimum + (element - min(x)) * ((maximum - minimum)\
-        / (max(x) - min(x))) for element in x
-    ]
-
-def indices_of_list_element_duplicates(x):
-    seen = set()
-    for index, element in enumerate(x):
-        if isinstance(element, list):
-            element = tuple(element)
-        if element not in seen:
-            seen.add(element)
-        else:
-            yield index
-
-def unique_list_elements(x):
-    unique_elements = []
-    for element in x:
-        if element not in unique_elements:
-            unique_elements.append(element)
-    return unique_elements
-
-def composite_variable(x):
-    k = len(x) + 1
-    variable = 0
-    for index, element in enumerate(x):
-        variable += k**(index - 1) * element
-    return variable
+    return decoration
 
 class Clock(object):
 
@@ -360,21 +191,6 @@ class Clock(object):
     def printout(self):
         print(self.report())
 
-def timer(function):
-
-    @functools.wraps(function)
-    def decoration(
-        *args,
-        **kwargs
-        ):
-        arguments = inspect.getcallargs(function, *args, **kwargs)
-        clock     = Clock(name = function.__name__)
-        result    = function(*args, **kwargs)
-        clock.stop()
-        return result
-
-    return decoration
-
 class Clocks(object):
 
     def __init__(
@@ -432,74 +248,6 @@ class Clocks(object):
         if style is None:
             style = self._default_report_style
         print(self.report(style = style))
-
-def select_spread(
-    list_of_elements   = None,
-    number_of_elements = None
-    ):
-    """
-    This function returns the specified number of elements of a list spread
-    approximately evenly.
-    """
-    if len(list_of_elements) <= number_of_elements:
-        return list_of_elements
-    if number_of_elements == 0:
-        return []
-    if number_of_elements == 1:
-        return [list_of_elements[int(round((len(list_of_elements) - 1) / 2))]]
-    return \
-        [list_of_elements[int(round((len(list_of_elements) - 1) /\
-        (2 * number_of_elements)))]] +\
-        select_spread(list_of_elements[int(round((len(list_of_elements) - 1) /\
-        (number_of_elements))):], number_of_elements - 1)
-
-def split_list(
-    list_object = None,
-    granularity = None
-    ):
-    """
-    This function splits a list into a specified number of lists. It returns a
-    list of lists that correspond to these parts. Negative numbers of parts are
-    not accepted and numbers of parts greater than the number of elements in the
-    list result in the maximum possible number of lists being returned.
-    """
-    if granularity < 0:
-        raise Exception("negative granularity")
-    mean_length = len(list_object) / float(granularity)
-    split_list_object = []
-    last_length = float(0)
-    if len(list_object) > granularity:
-        while last_length < len(list_object):
-            split_list_object.append(
-                list_object[int(last_length):int(last_length + mean_length)]
-            )
-            last_length += mean_length
-    else:
-        split_list_object = [[element] for element in list_object]
-    return split_list_object
-
-def model_linear(
-    data              = None,
-    quick_calculation = False
-    ):
-    if quick_calculation is True:
-        data = select_spread(data, 10)
-    n = len(data)
-    x_values         = []
-    y_values         = []
-    x_squared_values = []
-    xy_values        = []
-    for datum in data:
-        x = datum[0]
-        y = datum[1]
-        x_values.append(x)
-        y_values.append(y)
-        x_squared_values.append(x ** 2)
-        xy_values.append(x * y)
-    b1 = (sum(xy_values) - (sum(x_values) * sum(y_values)) / n) / \
-         (sum(x_squared_values) - (sum(x_values) ** 2) / n)
-    b0 = (sum(y_values) - b1 * sum(x_values)) / n
-    return (b0, b1)
 
 class Progress():
 
@@ -609,3 +357,322 @@ class Progress():
                 ETR        = self.ETR()
             )
 _main()
+
+def UID():
+    return str(uuid.uuid4())
+
+def unique_number(
+    style = None
+    ):
+    # mode: integer 3 significant figures
+    if style == "integer 3 significant figures":
+        initial_number = 100
+        if "unique_numbers_3_significant_figures" not in globals():
+            global unique_numbers_3_significant_figures
+            unique_numbers_3_significant_figures = []
+        if not unique_numbers_3_significant_figures:
+            unique_numbers_3_significant_figures.append(initial_number)
+        else:
+            unique_numbers_3_significant_figures.append(
+                unique_numbers_3_significant_figures[-1] + 1
+            )
+        if\
+            style == "integer 3 significant figures" and \
+            unique_numbers_3_significant_figures[-1] > 999:
+            raise Exception
+        return unique_numbers_3_significant_figures[-1]
+    # mode: integer
+    else:
+        initial_number = 1
+        if "unique_numbers" not in globals():
+            global unique_numbers
+            unique_numbers = []
+        if not unique_numbers:
+            unique_numbers.append(initial_number)
+        else:
+            unique_numbers.append(unique_numbers[-1] + 1)
+        return unique_numbers[-1]
+
+def unique_3_digit_number():
+    return unique_number(style = "integer 3 significant figures")
+
+## @brief propose a filename
+#  @detail This function returns a filename string. If a default filename is not
+#  specified, the function generates one based on the current time. If a default
+#  filename is specified, the function uses it as the default filename. By
+#  default, the function then checks to see if using the filename would cause
+#  overwriting of an existing file. If overwriting is possible, the function
+#  appends an integer to the filename in a loop in order to generate a filename
+#  that would not cause overwriting of an existing file. The function can be set
+#  to overwrite instead of using the default overwrite protection behaviour.
+#  @return filename string
+def propose_filename(
+    filename  = None,
+    overwrite = False
+    ):
+    # If no file name is specified, generate one.
+    if not filename:
+        filename = time_UTC()
+    filename_proposed = filename
+    if not overwrite:
+        count = 0
+        while os.path.exists(filename_proposed):
+            count = count + 1
+            filename_directory = os.path.dirname(filename)
+            filename_base = os.path.splitext(os.path.basename(filename))[0]
+            filename_extension = os.path.splitext(os.path.basename(filename))[1]
+            if filename_directory:
+                filename_proposed = filename_directory + \
+                                    "/"                + \
+                                    filename_base      + \
+                                    "_"                + \
+                                    str(count)         + \
+                                    filename_extension
+            else:
+                filename_proposed = filename_base      + \
+                                    "_"                + \
+                                    str(count)         + \
+                                    filename_extension
+    return filename_proposed
+
+def ensure_platform_release(
+    keyphrase  = "el7",
+    require    = True,
+    warn       = False
+    ):
+    import platform
+    release = platform.release()
+    if keyphrase not in release:
+        message =\
+            "inappropriate environment: " +\
+            "\"{keyphrase}\" required; \"{release}\" available".format(
+                keyphrase = keyphrase,
+                release   = release
+            )
+        #if warn is True:
+            #log.warn(message)
+        if require is True:
+            #log.fatal(message)
+            raise(EnvironmentError)
+
+def ensure_file_existence(filename):
+    #log.debug("ensure existence of file {filename}".format(
+    #    filename = filename
+    #))
+    if not os.path.isfile(os.path.expandvars(filename)):
+        #log.fatal("file {filename} does not exist".format(
+        #    filename = filename
+        #))
+        raise(IOError)
+    #else:
+        #log.debug("file {filename} found".format(
+        #    filename = filename
+        #))
+
+def rm_file(filename):
+    os.remove(filename)
+
+def ensure_program_available(program):
+    log.debug("ensure program {program} available".format(
+        program = program
+    ))
+    if which(program) is None:
+        log.error("program {program} not available".format(
+            program = program
+        ))
+        raise(EnvironmentError)
+    else:
+        log.debug("program {program} available".format(
+            program = program
+        ))
+
+def which(program):
+    def is_exe(fpath):
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+    fpath, fname = os.path.split(program)
+    if fpath:
+        if is_exe(program):
+            return(program)
+    else:
+        for path in os.environ["PATH"].split(os.pathsep):
+            path = path.strip('"')
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+    return None
+
+def import_object(
+    filename  = None
+    ):
+    filename = propose_filename(
+        filename  = filename,
+        overwrite = overwrite
+    )
+    return pickle.load(open(filename, "rb"))
+
+def export_object(
+    x,
+    filename  = None,
+    overwrite = False
+    ):
+    filename = propose_filename(
+        filename  = filename,
+        overwrite = overwrite
+    )
+    pickle.dump(x, open(filename, "wb"))
+
+## @brief return a naturally-sorted list
+#  @detail This function returns a naturally-sorted list from an input list.
+def natural_sort(list_object):
+    convert = lambda text: int(text) if text.isdigit() else text.lower()
+    alphanumeric_key = lambda key: [
+        convert(text) for text in re.split("([0-9]+)", key)
+    ]
+    return sorted(list_object, key = alphanumeric_key)
+
+## @brief return a naturally-sorted list of filenames that are in a sequence or
+## a dictionary of lists of filenames that are in a sequence
+def find_file_sequences(
+    extension                  = "png",
+    directory                  = ".",
+    return_first_sequence_only = True,
+    ):
+    filenames_of_directory = os.listdir(directory)
+    filenames_found = [
+        filename for filename in filenames_of_directory if re.match(
+            r".*\d+.*\." + extension,
+            filename
+        )
+    ]
+    filename_sequences = collections.defaultdict(list)
+    for filename in filenames_found:
+        pattern = re.sub("\d+", "XXX", filename)
+        filename_sequences[pattern].append(filename)
+    if return_first_sequence_only is True:
+        first_key_identified = filename_sequences.iterkeys().next()
+        filename_sequence = \
+            natural_sort(filename_sequences[first_key_identified])
+        return filename_sequence
+    else:
+        return filename_sequences
+
+## @brief return a list of files, directories and subdirectories at a specified
+## directory
+def directory_listing(
+    directory = ".",
+    ):
+    files_list = []
+    for root, directories, filenames in os.walk(directory):
+        for filename in filenames:
+            files_list.append(os.path.join(root, filename))
+    return files_list
+
+def indices_of_list_element_duplicates(x):
+    seen = set()
+    for index, element in enumerate(x):
+        if isinstance(element, list):
+            element = tuple(element)
+        if element not in seen:
+            seen.add(element)
+        else:
+            yield index
+
+def unique_list_elements(x):
+    unique_elements = []
+    for element in x:
+        if element not in unique_elements:
+            unique_elements.append(element)
+    return unique_elements
+
+def select_spread(
+    list_of_elements   = None,
+    number_of_elements = None
+    ):
+    """
+    This function returns the specified number of elements of a list spread
+    approximately evenly.
+    """
+    if len(list_of_elements) <= number_of_elements:
+        return list_of_elements
+    if number_of_elements == 0:
+        return []
+    if number_of_elements == 1:
+        return [list_of_elements[int(round((len(list_of_elements) - 1) / 2))]]
+    return \
+        [list_of_elements[int(round((len(list_of_elements) - 1) /\
+        (2 * number_of_elements)))]] +\
+        select_spread(list_of_elements[int(round((len(list_of_elements) - 1) /\
+        (number_of_elements))):], number_of_elements - 1)
+
+def split_list(
+    list_object = None,
+    granularity = None
+    ):
+    """
+    This function splits a list into a specified number of lists. It returns a
+    list of lists that correspond to these parts. Negative numbers of parts are
+    not accepted and numbers of parts greater than the number of elements in the
+    list result in the maximum possible number of lists being returned.
+    """
+    if granularity < 0:
+        raise Exception("negative granularity")
+    mean_length = len(list_object) / float(granularity)
+    split_list_object = []
+    last_length = float(0)
+    if len(list_object) > granularity:
+        while last_length < len(list_object):
+            split_list_object.append(
+                list_object[int(last_length):int(last_length + mean_length)]
+            )
+            last_length += mean_length
+    else:
+        split_list_object = [[element] for element in list_object]
+    return split_list_object
+
+def normalize(
+    x,
+    summation = None
+    ):
+    if summation is None:
+        summation = sum(x) # normalize to unity
+    return [element/summation for element in x]
+
+def rescale(
+    x,
+    minimum = 0,
+    maximum = 1
+    ):
+    return [
+        minimum + (element - min(x)) * ((maximum - minimum)\
+        / (max(x) - min(x))) for element in x
+    ]
+
+def composite_variable(x):
+    k = len(x) + 1
+    variable = 0
+    for index, element in enumerate(x):
+        variable += k**(index - 1) * element
+    return variable
+
+def model_linear(
+    data              = None,
+    quick_calculation = False
+    ):
+    if quick_calculation is True:
+        data = select_spread(data, 10)
+    n = len(data)
+    x_values         = []
+    y_values         = []
+    x_squared_values = []
+    xy_values        = []
+    for datum in data:
+        x = datum[0]
+        y = datum[1]
+        x_values.append(x)
+        y_values.append(y)
+        x_squared_values.append(x ** 2)
+        xy_values.append(x * y)
+    b1 = (sum(xy_values) - (sum(x_values) * sum(y_values)) / n) / \
+         (sum(x_squared_values) - (sum(x_values) ** 2) / n)
+    b0 = (sum(y_values) - b1 * sum(x_values)) / n
+    return (b0, b1)
