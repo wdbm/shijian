@@ -31,7 +31,7 @@ from __future__ import division
 #                                                                              #
 ################################################################################
 
-version = "2016-01-15T2317Z"
+version = "2016-01-20T0746Z"
 
 import os
 import time
@@ -504,10 +504,6 @@ def which(program):
 def import_object(
     filename  = None
     ):
-    filename = propose_filename(
-        filename  = filename,
-        overwrite = overwrite
-    )
     return pickle.load(open(filename, "rb"))
 
 def export_object(
