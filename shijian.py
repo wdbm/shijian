@@ -31,7 +31,7 @@ from __future__ import division
 #                                                                              #
 ################################################################################
 
-version = "2016-01-20T0746Z"
+version = "2016-01-25T1309Z"
 
 import os
 import time
@@ -473,18 +473,18 @@ def rm_file(filename):
     os.remove(filename)
 
 def ensure_program_available(program):
-    log.debug("ensure program {program} available".format(
-        program = program
-    ))
+    #log.debug("ensure program {program} available".format(
+    #    program = program
+    #))
     if which(program) is None:
-        log.error("program {program} not available".format(
-            program = program
-        ))
+        #log.error("program {program} not available".format(
+        #    program = program
+        #))
         raise(EnvironmentError)
-    else:
-        log.debug("program {program} available".format(
-            program = program
-        ))
+    #else:
+        #log.debug("program {program} available".format(
+        #    program = program
+        #))
 
 def which(program):
     def is_exe(fpath):
