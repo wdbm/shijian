@@ -9,7 +9,8 @@ from __future__ import division
 #                                                                              #
 # LICENCE INFORMATION                                                          #
 #                                                                              #
-# This program provides change and time utilities in Python.                   #
+# This program provides change, time, file, list and statistics utilities in   #
+# Python.                                                                      #
 #                                                                              #
 # copyright (C) 2014 William Breaden Madden                                    #
 #                                                                              #
@@ -31,18 +32,19 @@ from __future__ import division
 #                                                                              #
 ################################################################################
 
-version = "2016-01-25T1309Z"
+name    = "shijian"
+version = "2016-03-28T1733Z"
 
+import collections
+import datetime
+import functools
+import inspect
+import math
 import os
+import pickle
+import re
 import time
 import uuid
-import datetime
-import inspect
-import pickle
-import functools
-import re
-import collections
-import math
 
 def _main():
     global clocks
@@ -356,7 +358,6 @@ class Progress():
                 ETA        = self.ETA(),
                 ETR        = self.ETR()
             )
-_main()
 
 def UID():
     return str(uuid.uuid4())
@@ -455,23 +456,6 @@ def ensure_platform_release(
             #log.fatal(message)
             raise(EnvironmentError)
 
-def ensure_file_existence(filename):
-    #log.debug("ensure existence of file {filename}".format(
-    #    filename = filename
-    #))
-    if not os.path.isfile(os.path.expandvars(filename)):
-        #log.fatal("file {filename} does not exist".format(
-        #    filename = filename
-        #))
-        raise(IOError)
-    #else:
-        #log.debug("file {filename} found".format(
-        #    filename = filename
-        #))
-
-def rm_file(filename):
-    os.remove(filename)
-
 def ensure_program_available(program):
     #log.debug("ensure program {program} available".format(
     #    program = program
@@ -501,30 +485,22 @@ def which(program):
                 return exe_file
     return None
 
-def import_object(
-    filename  = None
-    ):
-    return pickle.load(open(filename, "rb"))
+def ensure_file_existence(filename):
+    #log.debug("ensure existence of file {filename}".format(
+    #    filename = filename
+    #))
+    if not os.path.isfile(os.path.expandvars(filename)):
+        #log.fatal("file {filename} does not exist".format(
+        #    filename = filename
+        #))
+        raise(IOError)
+    #else:
+        #log.debug("file {filename} found".format(
+        #    filename = filename
+        #))
 
-def export_object(
-    x,
-    filename  = None,
-    overwrite = False
-    ):
-    filename = propose_filename(
-        filename  = filename,
-        overwrite = overwrite
-    )
-    pickle.dump(x, open(filename, "wb"))
-
-## @brief return a naturally-sorted list
-#  @detail This function returns a naturally-sorted list from an input list.
-def natural_sort(list_object):
-    convert = lambda text: int(text) if text.isdigit() else text.lower()
-    alphanumeric_key = lambda key: [
-        convert(text) for text in re.split("([0-9]+)", key)
-    ]
-    return sorted(list_object, key = alphanumeric_key)
+def rm_file(filename):
+    os.remove(filename)
 
 ## @brief return a naturally-sorted list of filenames that are in a sequence or
 ## a dictionary of lists of filenames that are in a sequence
@@ -552,6 +528,14 @@ def find_file_sequences(
     else:
         return filename_sequences
 
+## @brief return a list of files at a specified directory
+def ls_files(
+    directory = "."
+    ):
+    return([filename for filename in os.listdir(directory) if os.path.isfile(
+        os.path.join(directory, filename)
+    )])
+
 ## @brief return a list of files, directories and subdirectories at a specified
 ## directory
 def directory_listing(
@@ -562,6 +546,15 @@ def directory_listing(
         for filename in filenames:
             files_list.append(os.path.join(root, filename))
     return files_list
+
+## @brief return a naturally-sorted list
+#  @detail This function returns a naturally-sorted list from an input list.
+def natural_sort(list_object):
+    convert = lambda text: int(text) if text.isdigit() else text.lower()
+    alphanumeric_key = lambda key: [
+        convert(text) for text in re.split("([0-9]+)", key)
+    ]
+    return sorted(list_object, key = alphanumeric_key)
 
 def indices_of_list_element_duplicates(x):
     seen = set()
@@ -672,3 +665,24 @@ def model_linear(
          (sum(x_squared_values) - (sum(x_values) ** 2) / n)
     b0 = (sum(y_values) - b1 * sum(x_values)) / n
     return (b0, b1)
+
+def import_object(
+    filename  = None
+    ):
+    return pickle.load(open(filename, "rb"))
+
+def export_object(
+    x,
+    filename  = None,
+    overwrite = False
+    ):
+    filename = propose_filename(
+        filename  = filename,
+        overwrite = overwrite
+    )
+    pickle.dump(x, open(filename, "wb"))
+
+def string_to_bool(x):
+    return x.lower() in ("yes", "true", "t", "1")
+
+_main()
