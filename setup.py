@@ -8,7 +8,7 @@ def main():
 
     setuptools.setup(
         name             = "shijian",
-        version          = "2016.03.28.1733",
+        version          = "2016.04.03.1855",
         description      = "change and time utilities",
         long_description = Markdown_to_reStructuredText("README.md"),
         url              = "https://github.com/wdbm/shijian",

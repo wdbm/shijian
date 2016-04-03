@@ -33,7 +33,7 @@ from __future__ import division
 ################################################################################
 
 name    = "shijian"
-version = "2016-03-28T1733Z"
+version = "2016-04-03T1855Z"
 
 import collections
 import datetime
@@ -617,6 +617,22 @@ def split_list(
     else:
         split_list_object = [[element] for element in list_object]
     return split_list_object
+
+def change_list_resolution(
+    values             = None,
+    length             = None,
+    interpolation_type = "linear"
+    ):
+    y1 = values
+    x1 = range(0, len(values))
+    interpolation = scipy.interpolate.interp1d(
+        x1,
+        y1,
+        kind = interpolation_type
+    )
+    x2 = list(numpy.linspace(min(x1), max(x1), length))
+    y2 = [float(interpolation(x)) for x in x2]
+    return y2
 
 def normalize(
     x,
