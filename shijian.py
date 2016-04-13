@@ -33,7 +33,7 @@ from __future__ import division
 ################################################################################
 
 name    = "shijian"
-version = "2016-04-03T1859Z"
+version = "2016-04-13T1547Z"
 
 import collections
 import datetime
@@ -567,6 +567,14 @@ def indices_of_list_element_duplicates(x):
             seen.add(element)
         else:
             yield index
+
+def indices_of_greatest_values(
+    x,
+    number = 5
+    ):
+    if len(x) <= number:
+        number = len(x)
+    return [y[0] for y in sorted(enumerate(x), key = lambda y: y[1])[-number:]]
 
 def unique_list_elements(x):
     unique_elements = []
