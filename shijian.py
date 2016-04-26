@@ -33,7 +33,7 @@ from __future__ import division
 ################################################################################
 
 name    = "shijian"
-version = "2016-04-25T2258Z"
+version = "2016-04-26T1525Z"
 
 import collections
 import datetime
@@ -89,6 +89,33 @@ def style_datetime_object(
     elif style == "UNIX time S":
         return int((datetime_object -\
             datetime.datetime.utcfromtimestamp(0)).total_seconds())
+    # human-readable date
+    elif style == "day DD month YYYY":
+        return datetime_object.strftime("%A %-d %B %Y")
+    # human-readable time and date
+    elif style == "HH:MM day DD month YYYY":
+        return datetime_object.strftime("%-H:%-M %A %-d %B %Y")
+    # human-readable time with seconds and date
+    elif style == "HH:MM:SS day DD month YYYY":
+        return datetime_object.strftime("%-H:%-M:%-S %A %-d %B %Y")
+    # human-readable date with time with seconds
+    elif style ==  "day DD month YYYY HH:MM:SS":
+        return datetime_object.strftime("%A %-d %B %Y %-H:%-M:%-S")
+    # human-readable-audible time with seconds and date
+    elif style == "HH hours MM minutes SS sounds day DD month YYYY":
+        return datetime_object.strftime("%-H hours %-M minutes %-S seconds %A %-d %B %Y")
+    # human-readable time with seconds
+    elif style == "HH:MM:SS":
+        return datetime_object.strftime("%-H:%-M:%-S")
+    # human-readable-audible time with seconds
+    elif style == "HH hours MM minutes SS seconds":
+        return datetime_object.strftime("%-H hours %-M minutes %-S seconds")
+    # filename safe
+    elif style == "YYYY-MM-DDTHHMMZ":
+        return datetime_object.strftime("%Y-%m-%dT%H%MZ")
+    # filename safe
+    elif style == "YYYY-MM-DDTHHMMSSZ":
+        return datetime_object.strftime("%Y-%m-%dT%H%M%SZ")
     # filename safe
     else:
         return datetime_object.strftime("%Y-%m-%dT%H%M%SZ")
