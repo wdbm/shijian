@@ -31,5 +31,8 @@ def main():
             style           = style
         ))
 
+    print("\ncurrent time UTC:\n")
+    print(shijian.time_UTC(style = "HH hours MM minutes SS sounds day DD month YYYY"))
+
 if __name__ == '__main__':
     main()
