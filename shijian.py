@@ -33,7 +33,7 @@ from __future__ import division
 ################################################################################
 
 name    = "shijian"
-version = "2016-04-26T1525Z"
+version = "2016-05-09T1801Z"
 
 import collections
 import datetime
@@ -741,5 +741,108 @@ def export_object(
 
 def string_to_bool(x):
     return x.lower() in ("yes", "true", "t", "1")
+
+def number_to_English_text(
+    number
+    ):
+
+    ones =      [
+                 "",
+                 "one ",
+                 "two ",
+                 "three ",
+                 "four ",
+                 "five ",
+                 "six ",
+                 "seven ",
+                 "eight ",
+                 "nine "
+                ]
+    teens =     [
+                 "ten ",
+                 "eleven ",
+                 "twelve ",
+                 "thirteen ",
+                 "fourteen ",
+                 "fifteen ",
+                 "sixteen ",
+                 "seventeen ",
+                 "eighteen ",
+                 "nineteen "
+                ]
+    tens =      [
+                 "",
+                 "",
+                 "twenty ",
+                 "thirty ",
+                 "forty ",
+                 "fifty ",
+                 "sixty ",
+                 "seventy ",
+                 "eighty ",
+                 "ninety "
+                ]
+    thousands = [
+                 "",
+                 "thousand ",
+                 "million ",
+                 "billion ",
+                 "trillion ",
+                 "quadrillion ",
+                 "quintillion ",
+                 "sextillion ",
+                 "septillion ",
+                 "octillion ",
+                 "nonillion ",
+                 "decillion ",
+                 "undecillion ",
+                 "duodecillion ",
+                 "tredecillion ",
+                 "quattuordecillion ",
+                 "quindecillion",
+                 "sexdecillion ",
+                 "septendecillion ", 
+                 "octodecillion ",
+                 "novemdecillion ",
+                 "vigintillion "
+                ]
+
+    # Split the number into 3-digit groups with each group representing
+    # hundreds, thousands etc.
+    number_in_groups_of_3 = []
+    number_as_string = str(number)
+    for position in range(3, 33, 3):
+        progressive_number_string = number_as_string[-position:]
+        progression = len(number_as_string) - position
+        # Break if the end of the number string is encountered.
+        if progression < -2:
+            break
+        else:
+            if progression >= 0:
+                number_in_groups_of_3.append(int(progressive_number_string[:3]))
+            elif progression >= -1:
+                number_in_groups_of_3.append(int(progressive_number_string[:2]))
+            elif progression >= -2:
+                number_in_groups_of_3.append(int(progressive_number_string[:1]))
+    # Split the number 3-digit groups into groups of ones, tens etc. and build
+    # an English text representation of the number.
+    number_words = ""
+    for index, group in enumerate(number_in_groups_of_3):
+        number_1 = group % 10
+        number_2 = (group % 100) // 10
+        number_3 = (group % 1000) // 100
+        if group == 0:
+            continue
+        else:
+            thousand = thousands[index]
+        if number_2 == 0:
+            number_words = ones[number_1] + thousand + number_words
+        elif number_2 == 1:
+            number_words = teens[number_1] + thousand + number_words
+        elif number_2 > 1:
+            number_words = tens[number_2] + ones[number_1] + thousand + number_words
+        if number_3 > 0:
+            number_words = ones[number_3] + "hundred " + number_words
+    return number_words
 
 _main()
