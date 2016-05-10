@@ -33,7 +33,7 @@ from __future__ import division
 ################################################################################
 
 name    = "shijian"
-version = "2016-05-09T1801Z"
+version = "2016-05-10T0615Z"
 
 import collections
 import datetime
@@ -743,7 +743,7 @@ def string_to_bool(x):
     return x.lower() in ("yes", "true", "t", "1")
 
 def number_to_English_text(
-    number
+    number = None
     ):
 
     ones =      [
@@ -843,6 +843,20 @@ def number_to_English_text(
             number_words = tens[number_2] + ones[number_1] + thousand + number_words
         if number_3 > 0:
             number_words = ones[number_3] + "hundred " + number_words
-    return number_words
+    return number_words.strip(" ")
+
+def replace_numbers_in_text_with_English_text(
+    text = None
+    ):
+    # Split the text into text and numbers.
+    text = re.split('(\d+)', text)
+    text_translated = []
+    # Replace numbers with English text.
+    for text_segment in text:
+        if all(character.isdigit() for character in text_segment):
+            text_translated.append(number_to_English_text(number = text_segment))
+        else:
+            text_translated.append(text_segment.strip(" "))
+    return " ".join(text_translated)
 
 _main()
