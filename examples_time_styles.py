@@ -23,7 +23,7 @@ def main():
         "HH:MM day DD month YYYY",
         "HH:MM:SS day DD month YYYY",
         "day DD month YYYY HH:MM:SS",
-        "HH hours MM minutes SS sounds day DD month YYYY",
+        "HH hours MM minutes SS seconds day DD month YYYY",
         "DD:HH:MM",
         "DD:HH:MM:SS",
         "HH:MM:SS",

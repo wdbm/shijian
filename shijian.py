@@ -33,7 +33,7 @@ from __future__ import division
 ################################################################################
 
 name    = "shijian"
-version = "2016-05-11T1424Z"
+version = "2016-05-12T1337Z"
 
 import collections
 import datetime
@@ -72,56 +72,100 @@ def style_datetime_object(
     datetime_object = None,
     style           = "YYYY-MM-DDTHHMMZ"
     ):
-    # filename safe
-    if style == "YYYY-MM-DDTHHMMZ":
-        return datetime_object.strftime("%Y-%m-%dT%H%MZ")
-    # filename safe with seconds
-    elif style == "YYYY-MM-DDTHHMMSSZ":
-        return datetime_object.strftime("%Y-%m-%dT%H%M%SZ")
-    # filename safe with seconds and microseconds
-    elif style == "YYYY-MM-DDTHHMMSSMMMMMMZ":
-        return datetime_object.strftime("%Y-%m-%dT%H%M%S%fZ")
-    # elegant
-    elif style == "YYYY-MM-DD HH:MM:SS UTC":
-        return datetime_object.strftime("%Y-%m-%d %H:%M:%SZ")
-    # UNIX time in seconds with second fraction
-    elif style == "UNIX time S.SSSSSS":
-        return (datetime_object -\
-            datetime.datetime.utcfromtimestamp(0)).total_seconds()
-    # UNIX time in seconds rounded
-    elif style == "UNIX time S":
-        return int((datetime_object -\
-            datetime.datetime.utcfromtimestamp(0)).total_seconds())
-    # human-readable date
-    elif style == "day DD month YYYY":
-        return datetime_object.strftime("%A %d %B %Y")
-    # human-readable time and date
-    elif style == "HH:MM day DD month YYYY":
-        return datetime_object.strftime("%H:%M %A %d %B %Y")
-    # human-readable time with seconds and date
-    elif style == "HH:MM:SS day DD month YYYY":
-        return datetime_object.strftime("%H:%M:%S %A %d %B %Y")
-    # human-readable date with time with seconds
-    elif style == "day DD month YYYY HH:MM:SS":
-        return datetime_object.strftime("%A %d %B %Y %H:%M:%S")
-    # human-readable-audible time with seconds and date
-    elif style == "HH hours MM minutes SS sounds day DD month YYYY":
-        return datetime_object.strftime("%H hours %M minutes %S seconds %A %d %B %Y")
-    # human-readable days, hours and minutes
-    elif style == "DD:HH:MM":
-        return datetime_object.strftime("%d:%H:%M")
-    # human-readable days, hours, minutes and seconds
-    elif style == "DD:HH:MM:SS":
-        return datetime_object.strftime("%d:%H:%M:%S")
-    # human-readable time with seconds
-    elif style == "HH:MM:SS":
-        return datetime_object.strftime("%H:%M:%S")
-    # human-readable-audible time with seconds
-    elif style == "HH hours MM minutes SS seconds":
-        return datetime_object.strftime("%H hours %M minutes %S seconds")
-    # filename safe
-    else:
-        return datetime_object.strftime("%Y-%m-%dT%H%MZ")
+
+    if type(datetime_object) is datetime.datetime:
+
+        # filename safe
+        if style == "YYYY-MM-DDTHHMMZ":
+            return datetime_object.strftime("%Y-%m-%dT%H%MZ")
+        # filename safe with seconds
+        elif style == "YYYY-MM-DDTHHMMSSZ":
+            return datetime_object.strftime("%Y-%m-%dT%H%M%SZ")
+        # filename safe with seconds and microseconds
+        elif style == "YYYY-MM-DDTHHMMSSMMMMMMZ":
+            return datetime_object.strftime("%Y-%m-%dT%H%M%S%fZ")
+        # elegant
+        elif style == "YYYY-MM-DD HH:MM:SS UTC":
+            return datetime_object.strftime("%Y-%m-%d %H:%M:%SZ")
+        # UNIX time in seconds with second fraction
+        elif style == "UNIX time S.SSSSSS":
+            return (datetime_object -\
+                datetime.datetime.utcfromtimestamp(0)).total_seconds()
+        # UNIX time in seconds rounded
+        elif style == "UNIX time S":
+            return int((datetime_object -\
+                datetime.datetime.utcfromtimestamp(0)).total_seconds())
+        # human-readable date
+        elif style == "day DD month YYYY":
+            return datetime_object.strftime("%A %d %B %Y")
+        # human-readable time and date
+        elif style == "HH:MM day DD month YYYY":
+            return datetime_object.strftime("%H:%M %A %d %B %Y")
+        # human-readable time with seconds and date
+        elif style == "HH:MM:SS day DD month YYYY":
+            return datetime_object.strftime("%H:%M:%S %A %d %B %Y")
+        # human-readable date with time with seconds
+        elif style == "day DD month YYYY HH:MM:SS":
+            return datetime_object.strftime("%A %d %B %Y %H:%M:%S")
+        # human-readable-audible time with seconds and date
+        elif style == "HH hours MM minutes SS sounds day DD month YYYY":
+            return datetime_object.strftime("%H hours %M minutes %S seconds %A %d %B %Y")
+        # human-readable days, hours and minutes
+        elif style == "DD:HH:MM":
+            return datetime_object.strftime("%d:%H:%M")
+        # human-readable days, hours, minutes and seconds
+        elif style == "DD:HH:MM:SS":
+            return datetime_object.strftime("%d:%H:%M:%S")
+        # human-readable time with seconds
+        elif style == "HH:MM:SS":
+            return datetime_object.strftime("%H:%M:%S")
+        # human-readable-audible time with seconds
+        elif style == "HH hours MM minutes SS seconds":
+            return datetime_object.strftime("%H hours %M minutes %S seconds")
+        # filename safe
+        else:
+            return datetime_object.strftime("%Y-%m-%dT%H%MZ")
+
+    if type(datetime_object) is datetime.timedelta:
+
+        if style == "YYYY-MM-DDTHHMMZ":
+            style = "{DD} days, {HH}:{MM}:{SS}"
+
+        if hasattr(datetime_object, "seconds"):
+            seconds   = datetime_object.seconds + datetime_object.days * 24 * 3600
+        else:
+            seconds   = int(datetime_object)
+
+        seconds_total = seconds
+
+        minutes       = int(math.floor(seconds / 60))
+        minutes_total = minutes
+        seconds      -= minutes * 60
+
+        hours         = int(math.floor(minutes / 60))
+        hours_total   = hours
+        minutes      -= hours * 60
+
+        days          = int(math.floor(hours / 24))
+        days_total    = days
+        hours        -= days * 24
+
+        years         = int(math.floor(days / 365))
+        years_total   = years
+        days         -= years * 365
+
+        return style.format(**{
+            "Y"   : years_total,
+            "D"   : days_total,
+            "H"   : hours_total,
+            "M"   : minutes_total,
+            "S"   : seconds_total,
+            "YYYY": str(years).zfill(4),
+            "DD"  : str(days).zfill(2),
+            "HH"  : str(hours).zfill(2),
+            "MM"  : str(minutes).zfill(2),
+            "SS"  : str(seconds).zfill(2)
+        })
 
 def timer(function):
 
