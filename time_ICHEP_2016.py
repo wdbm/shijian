@@ -32,7 +32,7 @@
 ################################################################################
 
 name    = "time_ICHEP_2016"
-version = "2016-05-13T0310Z"
+version = "2016-05-13T0503Z"
 
 import datetime
 import os
@@ -42,6 +42,8 @@ import pyprel
 import shijian
 
 def main():
+
+    os.system("tput reset")
 
     while True:
 

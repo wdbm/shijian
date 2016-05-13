@@ -2,6 +2,12 @@
 
 Python change and time functions
 
+# setuo
+
+```Bash
+sudo pip install shijian
+```
+
 # usage
 
 ## time expressions
@@ -126,6 +132,10 @@ The function `natural_sort` naturally sorts a list. The function `find_file_sequ
 ```
 
 ## ICHEP 2016
+
+```Bash
+./time_ICHEP_2016.py
+```
 
 ![](images/ICHEP_2016.gif)
 
