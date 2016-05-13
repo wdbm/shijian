@@ -124,3 +124,11 @@ The function `natural_sort` naturally sorts a list. The function `find_file_sequ
 ```Bash
 ['image-000001.png', 'image-000002.png', 'image-000003.png', 'image-000004.png', 'image-000005.png']
 ```
+
+## ICHEP 2016
+
+![](images/ICHEP_2016.gif)
+
+# upcoming
+
+Changes to time style specifications are under consideration.

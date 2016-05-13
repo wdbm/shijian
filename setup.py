@@ -8,14 +8,19 @@ def main():
 
     setuptools.setup(
         name             = "shijian",
-        version          = "2016.05.12.1337",
+        version          = "2016.05.13.0434",
         description      = "change and time utilities",
         long_description = Markdown_to_reStructuredText("README.md"),
         url              = "https://github.com/wdbm/shijian",
         author           = "Will Breaden Madden",
         author_email     = "w.bm@cern.ch",
         license          = "GPLv3",
-        py_modules       = ["shijian"],
+        py_modules       = [
+                           "shijian"
+                           ],
+        install_requires = [
+                           "pyprel"
+                           ],
         entry_points     = """
             [console_scripts]
             shijian = shijian:shijian

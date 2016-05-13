@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
 from __future__ import division
-import shijian
 import time
+
+import shijian
 
 def main():
 

@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
-import shijian
-import time
 import inspect
+import time
+
+import shijian
 
 def main():
 
