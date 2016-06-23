@@ -33,7 +33,7 @@ from __future__ import division
 ################################################################################
 
 name    = "shijian"
-version = "2016-05-12T1337Z"
+version = "2016-06-23T1124Z"
 
 import collections
 import datetime
@@ -44,9 +44,11 @@ import numpy
 import os
 import pickle
 import re
-import scipy.interpolate
+import sys
 import time
 import uuid
+
+import scipy.interpolate
 
 def _main():
     global clocks
@@ -622,6 +624,73 @@ def directory_listing(
         for filename in filenames:
             files_list.append(os.path.join(root, filename))
     return files_list
+
+class List_Consensus(list):
+
+    """
+    This class is designed to instantiate a list of elements. It features
+    functionality that limits approximately the memory usage of the list. On
+    estimating the size of the list as greater than the specified or default
+    size limit, the list reduces the number of elements it contains. The list
+    provides functionality to return its most frequent element, which can be
+    used to determine its "consensus" element.
+    """
+
+    def __init__(
+        self,
+        *args
+        ):
+        # list initialisation
+        if sys.version_info >= (3, 0):
+            super().__init__(self, *args)
+        else:
+            super(List_Consensus, self).__init__(*args)
+        self.size_constraint = 150 # bytes
+
+    def set_size_constraint(
+        self,
+        size = None
+        ):
+        if size is not None:
+            self.size_constraint = size
+
+    def ensure_size(
+        self,
+        size = None
+        ):
+        """
+        This function removes the least frequent elements until the size
+        constraint is met.
+        """
+        if size is None:
+            size = self.size_constraint
+        while sys.getsizeof(self) > size:
+            element_frequencies = collections.Counter(self)
+            infrequent_element = element_frequencies.most_common()[-1:][0][0]
+            self.remove(infrequent_element)
+
+    def append(
+        self,
+        element,
+        ensure_size = True,
+        size        = None
+        ):
+        if size is None:
+            size = self.size_constraint
+        list.append(self, element)
+        if ensure_size:
+            self.ensure_size(
+                size = size
+            )
+
+    def consensus(
+        self
+        ):
+        try:
+            element_frequencies = collections.Counter(self)
+            return element_frequencies.most_common(1)[0][0]
+        except:
+            return None
 
 ## @brief return a naturally-sorted list
 #  @detail This function returns a naturally-sorted list from an input list.
