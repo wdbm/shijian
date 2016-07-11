@@ -33,14 +33,13 @@ from __future__ import division
 ################################################################################
 
 name    = "shijian"
-version = "2016-06-23T1124Z"
+version = "2016-07-11T1857Z"
 
 import collections
 import datetime
 import functools
 import inspect
 import math
-import numpy
 import os
 import pickle
 import re
@@ -48,6 +47,7 @@ import sys
 import time
 import uuid
 
+import numpy
 import scipy.interpolate
 
 def _main():

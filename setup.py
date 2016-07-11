@@ -8,7 +8,7 @@ def main():
 
     setuptools.setup(
         name             = "shijian",
-        version          = "2016.06.23.1124",
+        version          = "2016.07.11.1857",
         description      = "change and time utilities",
         long_description = Markdown_to_reStructuredText("README.md"),
         url              = "https://github.com/wdbm/shijian",
@@ -19,7 +19,9 @@ def main():
                            "shijian"
                            ],
         install_requires = [
+                           "numpy",
                            "pyprel"
+                           "scipy"
                            ],
         entry_points     = """
             [console_scripts]
