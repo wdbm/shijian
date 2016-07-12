@@ -33,7 +33,7 @@ from __future__ import division
 ################################################################################
 
 name    = "shijian"
-version = "2016-07-11T1901Z"
+version = "2016-07-12T1547Z"
 
 import collections
 import datetime
@@ -624,6 +624,20 @@ def directory_listing(
         for filename in filenames:
             files_list.append(os.path.join(root, filename))
     return files_list
+
+def convert_type_list_elements(
+    list_object  = None,
+    element_type = str
+    ):
+    """
+    Recursively convert all elements and all elements of all sublists of a list
+    to a specified type and return the new list.
+    """
+    if element_type is str:
+        return [str(element) if not isinstance(element, list) else convert_type_list_elements(
+            list_object  = element,
+            element_type = str
+        ) for element in list_object]
 
 class List_Consensus(list):
 
