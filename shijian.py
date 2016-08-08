@@ -9,8 +9,8 @@ from __future__ import division
 #                                                                              #
 # LICENCE INFORMATION                                                          #
 #                                                                              #
-# This program provides change, time, file, list and statistics utilities in   #
-# Python.                                                                      #
+# This program provides change, time, file, list, statistics and other         #
+# utilities.                                                                   #
 #                                                                              #
 # copyright (C) 2014 William Breaden Madden                                    #
 #                                                                              #
@@ -33,7 +33,7 @@ from __future__ import division
 ################################################################################
 
 name    = "shijian"
-version = "2016-07-12T1547Z"
+version = "2016-08-08T2210Z"
 
 import collections
 import datetime
@@ -45,6 +45,7 @@ import pickle
 import re
 import sys
 import time
+import unicodedata
 import uuid
 
 import numpy
@@ -474,6 +475,26 @@ def unique_number(
 
 def unique_3_digit_number():
     return unique_number(style = "integer 3 significant figures")
+
+## @brief make text filename or URL safe
+def slugify(
+    text       = None,
+    filename   = True,
+    URL        = False,
+    return_str = True
+    ):
+    text = unicode(text, "utf-8")
+    if filename and not URL:
+        text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore")
+        text = unicode(re.sub("[^\w\s-]", "", text).strip())
+        text = unicode(re.sub("[-\s]+", "_", text))
+    elif URL:
+        text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore")
+        text = unicode(re.sub("[^\w\s-]", "", text).strip().lower())
+        text = unicode(re.sub("[-\s]+", "-", text))
+    if return_str:
+        text = str(text)
+    return text
 
 ## @brief propose a filename
 #  @detail This function returns a filename string. If a default filename is not

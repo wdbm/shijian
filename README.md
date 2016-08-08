@@ -1,6 +1,6 @@
 # shijian
 
-Python change and time functions
+Python change, time, file, list, statistics and other utilities
 
 # setuo
 
@@ -87,7 +87,9 @@ Function `unique_3_digit_number` returns an integer of 3 significant figures tha
 
 Clocks can be created in a straightforward way such as the following:
 
-    alpha = shijian.Clock(name = "alpha")
+```Python
+alpha = shijian.Clock(name = "alpha")
+```
 
 By default, clocks keep time from their creation time. This behaviour can be disabled using Boolean argument `start = False`. Clocks can be assigned a name or can generate their own unique identifier. Clocks can be stopped easily:
 
