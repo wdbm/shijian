@@ -33,7 +33,7 @@ from __future__ import division
 ################################################################################
 
 name    = "shijian"
-version = "2016-08-08T2252Z"
+version = "2016-11-16T1831Z"
 
 import collections
 import datetime
@@ -50,6 +50,7 @@ import uuid
 
 import numpy
 import scipy.interpolate
+import scipy.io.wavfile
 
 def _main():
     global clocks
@@ -826,6 +827,37 @@ def change_list_resolution(
         return y2
     elif dimensions == 2:
         return (x2, y2)
+
+def change_waveform_to_rectangle_waveform(
+    values             = None,
+    fraction_amplitude = 0.01
+    ):
+    values[values >= 0] = fraction_amplitude * max(values)
+    values[values <  0] = fraction_amplitude * min(values)
+    values[:] = [x * (1 / fraction_amplitude) for x in values] 
+    return values
+
+def change_sound_file_waveform_to_sound_file_rectangle_waveform(
+    filename_waveform           = None,
+    filename_rectangle_waveform = None,
+    overwrite                   = False,
+    fraction_amplitude          = 0.01
+    ):
+    if filename_rectangle_waveform is None:
+        filename_rectangle_waveform = filename_waveform
+    filename_rectangle_waveform = propose_filename(
+        filename  = filename_rectangle_waveform,
+        overwrite = overwrite
+    )
+    rate, values = scipy.io.wavfile.read(filename_waveform)
+    values = change_waveform_to_rectangle_waveform(
+        values             = values,
+        fraction_amplitude = fraction_amplitude
+    )
+    values[values >= 0] = fraction_amplitude * max(values)
+    values[values <  0] = fraction_amplitude * min(values)
+    values[:] = [x * (1 / fraction_amplitude) for x in values] 
+    scipy.io.wavfile.write(filename_rectangle_waveform, rate, values)
 
 def normalize(
     x,
