@@ -33,7 +33,7 @@ from __future__ import division
 ################################################################################
 
 name    = "shijian"
-version = "2016-11-16T1831Z"
+version = "2016-11-24T2350Z"
 
 import collections
 import datetime
@@ -1033,14 +1033,16 @@ def replace_numbers_in_text_with_English_text(
     text = None
     ):
     # Split the text into text and numbers.
-    text = re.split('(\d+)', text)
+    text = re.split("(\d+)", text)
+    if text[-1] == "":
+        text = text[:-1]
     text_translated = []
     # Replace numbers with English text.
     for text_segment in text:
         if all(character.isdigit() for character in text_segment):
             text_translated.append(number_to_English_text(number = text_segment))
         else:
-            text_translated.append(text_segment.strip(" "))
-    return " ".join(text_translated)
+            text_translated.append(text_segment)
+    return "".join(text_translated)
 
 _main()
