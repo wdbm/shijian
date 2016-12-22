@@ -33,7 +33,7 @@ from __future__ import division
 ################################################################################
 
 name    = "shijian"
-version = "2016-11-24T2350Z"
+version = "2016-12-22T0105Z"
 
 import collections
 import datetime
@@ -90,7 +90,10 @@ def style_datetime_object(
             return datetime_object.strftime("%Y-%m-%dT%H%M%S%fZ")
         # elegant
         elif style == "YYYY-MM-DD HH:MM:SS UTC":
-            return datetime_object.strftime("%Y-%m-%d %H:%M:%SZ")
+            return datetime_object.strftime("%Y-%m-%d %H:%M:%S UTC")
+        # elegant
+        elif style == "YYYY-MM-DD HH:MM:SS Z":
+            return datetime_object.strftime("%Y-%m-%d %H:%M:%S Z")
         # UNIX time in seconds with second fraction
         elif style == "UNIX time S.SSSSSS":
             return (datetime_object -\
