@@ -33,7 +33,7 @@ from __future__ import division
 ################################################################################
 
 name    = "shijian"
-version = "2016-12-22T0105Z"
+version = "2016-12-23T0337Z"
 
 import collections
 import datetime
@@ -43,6 +43,7 @@ import math
 import os
 import pickle
 import re
+import subprocess
 import sys
 import time
 import unicodedata
@@ -650,6 +651,56 @@ def directory_listing(
         for filename in filenames:
             files_list.append(os.path.join(root, filename))
     return files_list
+
+def engage_command(
+    command = None
+    ):
+    process = subprocess.Popen(
+        [command],
+        shell      = True,
+        executable = "/bin/bash",
+        stdout = subprocess.PIPE
+    )
+    process.wait()
+    output, errors = process.communicate()
+    return output
+
+def percentage_power():
+
+    filenames_power = engage_command(
+        command = "upower -e"
+    )
+    filenames_power = [
+        line for line in filenames_power.split("\n") if line
+    ]
+
+    filenames_power_battery = [
+        filename for filename in filenames_power if "battery" in filename
+    ]
+    filename_power_battery =\
+        filenames_power_battery[0] if filenames_power_battery else None
+
+    filenames_power_line = [
+        filename for filename in filenames_power if "line" in filename
+    ]
+    filename_power_line =\
+        filenames_power_line[0] if filenames_power_line else None
+
+    if filename_power_battery:
+        power_data = engage_command(
+            command = "upower -i {filename}".format(
+                filename = filename_power_battery
+            )
+        )
+        percentage_power = [
+            line for line in power_data.split("\n") if "percentage" in line
+        ][0].split()[1]
+    elif filename_power_line:
+        percentage_power = "100%"
+    else:
+        percentage_power = None
+
+    return percentage_power
 
 def convert_type_list_elements(
     list_object  = None,
