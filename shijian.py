@@ -33,7 +33,7 @@ from __future__ import division
 ################################################################################
 
 name    = "shijian"
-version = "2016-12-23T0337Z"
+version = "2017-01-03T1428Z"
 
 import collections
 import datetime
@@ -861,6 +861,50 @@ def split_list(
     else:
         split_list_object = [[element] for element in list_object]
     return split_list_object
+
+def Markdown_list_to_dictionary(
+    Markdown_list = None
+    ):
+    line = re.compile(r"( *)- ([^:\n]+)(?:: ([^\n]*))?\n?")
+    depth = 0
+    stack = [{}]
+    for indent, name, value in line.findall(Markdown_list):
+        indent = len(indent)
+        if indent > depth:
+            assert not stack[-1], "unexpected indent"
+        elif indent < depth:
+            stack.pop()
+        stack[-1][name] = value or {}
+        if not value:
+            # new branch
+            stack.append(stack[-1][name])
+        depth = indent
+    return stack[0]
+
+def Markdown_list_to_OrderedDict(
+    Markdown_list = None
+    ):
+    line = re.compile(r"( *)- ([^:\n]+)(?:: ([^\n]*))?\n?")
+    depth = 0
+    stack = [collections.OrderedDict()]
+    for indent, name, value in line.findall(Markdown_list):
+        indent = len(indent)
+        if indent > depth:
+            assert not stack[-1], "unexpected indent"
+        elif indent < depth:
+            stack.pop()
+        stack[-1][name] = value or collections.OrderedDict()
+        if not value:
+            # new branch
+            stack.append(stack[-1][name])
+        depth = indent
+    return stack[0]
+
+def open_configuration(
+    filename = None
+    ):
+    file_configuration = open(filename, "r").read()
+    return Markdown_list_to_OrderedDict(file_configuration)
 
 def change_list_resolution(
     values             = None,

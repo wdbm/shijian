@@ -133,6 +133,12 @@ The function `natural_sort` naturally sorts a list. The function `find_file_sequ
 ['image-000001.png', 'image-000002.png', 'image-000003.png', 'image-000004.png', 'image-000005.png']
 ```
 
+## configurations, Markdown lists
+
+Markdown lists are human-readable and machine-readable. So, they can be used to specify configurations written by humans for programs. This module features utilities for loading configurations specified in Markdown lists to Python dictionaries and ordered dictionaries.
+
+In order to facilitate the human-readability of configuration specifications, the idea is that lines that are not valid Markdown lists are ignored.
+
 ## ICHEP 2016
 
 ```Bash
