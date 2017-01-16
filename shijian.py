@@ -33,7 +33,7 @@ from __future__ import division
 ################################################################################
 
 name    = "shijian"
-version = "2017-01-10T2032Z"
+version = "2017-01-16T1600Z"
 
 import collections
 import datetime
