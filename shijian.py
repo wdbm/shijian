@@ -33,7 +33,7 @@ from __future__ import division
 ################################################################################
 
 name    = "shijian"
-version = "2017-01-18T1740Z"
+version = "2017-01-19T2013Z"
 
 import collections
 import datetime
@@ -544,16 +544,23 @@ def slugify(
 #  to overwrite instead of using the default overwrite protection behaviour.
 #  @return filename string
 def propose_filename(
-    filename         = None,
-    overwrite        = False,
-    slugify_filename = True
+    filename                       = None,
+    overwrite                      = False,
+    slugify_filename               = True,
+    exclude_extension_from_slugify = True
     ):
     # If no file name is specified, generate one.
     if not filename:
         filename = time_UTC()
     filename_proposed = filename
     if slugify_filename:
-        filename_proposed = slugify(text = filename)
+        if exclude_extension_from_slugify:
+            filename_base = os.path.splitext(os.path.basename(filename))[0]
+            filename_extension = os.path.splitext(os.path.basename(filename))[1]
+            filename_base = slugify(text = filename_base)
+            filename_proposed = filename_base + filename_extension
+        else:
+            filename_proposed = slugify(text = filename)
     if not overwrite:
         count = 0
         while os.path.exists(filename_proposed):
