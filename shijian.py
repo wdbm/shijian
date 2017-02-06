@@ -33,7 +33,7 @@ from __future__ import division
 ################################################################################
 
 name    = "shijian"
-version = "2017-01-19T2013Z"
+version = "2017-02-06T1459Z"
 
 import collections
 import datetime
@@ -42,6 +42,7 @@ import inspect
 import math
 import os
 import pickle
+import random
 import re
 import subprocess
 import sys
@@ -1183,5 +1184,15 @@ def replace_numbers_in_text_with_English_text(
         else:
             text_translated.append(text_segment)
     return "".join(text_translated)
+
+def pseudorandom_MAC_address():
+    return "{aa:02x}:{bb:02x}:{cc:02x}:{dd:02x}:{ee:02x}:{ff:02x}".format(
+        aa = random.randint(0, 255),
+        bb = random.randint(0, 255),
+        cc = random.randint(0, 255),
+        dd = random.randint(0, 255),
+        ee = random.randint(0, 255),
+        ff = random.randint(0, 255)
+    )
 
 _main()
