@@ -33,7 +33,7 @@ from __future__ import division
 ################################################################################
 
 name    = "shijian"
-version = "2017-02-06T1459Z"
+version = "2017-02-20T1455Z"
 
 import collections
 import datetime
@@ -104,6 +104,15 @@ def filename_time_UTC(
         filename = filename
     )
     return filename_proposed
+
+def style_UNIX_timestamp(
+    timestamp = None,
+    style     = "YYYY-MM-DDTHHMMZ"
+    ):
+    return style_datetime_object(
+        datetime_object = datetime.datetime.utcfromtimestamp(timestamp),
+        style           = style
+    )
 
 def style_datetime_object(
     datetime_object = None,

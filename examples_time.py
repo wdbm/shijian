@@ -63,5 +63,16 @@ def main():
 
     pyprel.print_line()
 
+    timestamp = 1487600377.0
+    print("convert UNIX timestamp {timestamp} to YYYY-MM-DDTHHMM".format(
+        timestamp = timestamp
+    ))
+    print(shijian.style_UNIX_timestamp(
+        timestamp = timestamp,
+        style     = "YYYY-MM-DDTHHMMZ"
+    ))
+
+    pyprel.print_line()
+
 if __name__ == '__main__':
     main()
