@@ -45,5 +45,14 @@ def main():
 
     pyprel.print_line()
 
+    print("minimal time style for seconds:\n")
+    for seconds in [10, 100, 1000, 10000, 100000]:
+        print("{seconds} seconds: {seconds_styled}".format(
+            seconds        = seconds,
+            seconds_styled = shijian.style_minimal_seconds(seconds)
+        ))
+
+    pyprel.print_line()
+
 if __name__ == '__main__':
     main()

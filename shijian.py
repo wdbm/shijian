@@ -33,7 +33,7 @@ from __future__ import division
 ################################################################################
 
 name    = "shijian"
-version = "2017-02-20T1455Z"
+version = "2017-02-22T1633Z"
 
 import collections
 import datetime
@@ -50,6 +50,7 @@ import time
 import unicodedata
 import uuid
 
+import dateutil.relativedelta
 import numpy
 import scipy.interpolate
 import scipy.io.wavfile
@@ -104,6 +105,13 @@ def filename_time_UTC(
         filename = filename
     )
     return filename_proposed
+
+def style_minimal_seconds(seconds):
+    time_intervals = ["days", "hours", "minutes", "seconds"]
+    dateutil_object = dateutil.relativedelta.relativedelta(seconds = seconds)
+    return " ".join("{} {}".format(
+        getattr(dateutil_object, interval), interval
+    ) for interval in time_intervals if getattr(dateutil_object, interval))
 
 def style_UNIX_timestamp(
     timestamp = None,
