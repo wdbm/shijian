@@ -33,7 +33,7 @@ from __future__ import division
 ################################################################################
 
 name    = "shijian"
-version = "2017-02-22T1633Z"
+version = "2017-02-24T0130Z"
 
 import collections
 import datetime
@@ -648,6 +648,19 @@ def which(program):
             if is_exe(exe_file):
                 return exe_file
     return None
+
+def running(program):
+    results = subprocess.Popen(
+        ["ps", "-A"],
+        stdout = subprocess.PIPE
+    ).communicate()[0].split("\n")
+    matches_current = [
+        line for line in results if program in line and "defunct" not in line
+    ]
+    if matches_current:
+        return True
+    else:
+        return False
 
 def ensure_file_existence(filename):
     #log.debug("ensure existence of file {filename}".format(
