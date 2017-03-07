@@ -33,7 +33,7 @@ from __future__ import division
 ################################################################################
 
 name    = "shijian"
-version = "2017-02-24T0130Z"
+version = "2017-03-07T1448Z"
 
 import collections
 import datetime
@@ -542,7 +542,7 @@ def slugify(
     if filename and not URL:
         text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore")
         text = unicode(re.sub("[^\w\s-]", "", text).strip())
-        text = unicode(re.sub("[-\s]+", "_", text))
+        text = unicode(re.sub("[\s]+", "_", text))
     elif URL:
         text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore")
         text = unicode(re.sub("[^\w\s-]", "", text).strip().lower())
