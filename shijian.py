@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
 
+"""
 ################################################################################
 #                                                                              #
 # shijian                                                                      #
@@ -9,8 +10,8 @@ from __future__ import division
 #                                                                              #
 # LICENCE INFORMATION                                                          #
 #                                                                              #
-# This program provides change, time, file, list, statistics and other         #
-# utilities.                                                                   #
+# This program provides change, time, file, list, statistics, language and     #
+# other utilities.                                                             #
 #                                                                              #
 # copyright (C) 2014 William Breaden Madden                                    #
 #                                                                              #
@@ -31,9 +32,10 @@ from __future__ import division
 # <http://www.gnu.org/licenses/>.                                              #
 #                                                                              #
 ################################################################################
+"""
 
 name    = "shijian"
-version = "2017-03-07T1448Z"
+version = "2017-03-09T2350Z"
 
 import collections
 import datetime
@@ -223,6 +225,39 @@ def style_datetime_object(
             "MM"  : str(minutes).zfill(2),
             "SS"  : str(seconds).zfill(2)
         })
+
+def HHMM_to_minutes(
+    HHMM # string "HHMM"
+    ):
+
+    hours, minutes = HHMM[:2], HHMM[2:]
+
+    return 60 * int(hours) + int(minutes)
+
+def now_in_minutes():
+
+    now = datetime.datetime.utcnow()
+
+    return 60 * now.hour + now.minute
+
+def in_daily_time_range(
+    time_range = None, # string "HHMM--HHMM" e.g. "1700--1000"
+    time_start = None, # string "HHMM"       e.g. "1700"
+    time_stop  = None  # string "HHMM"       e.g. "1000"
+    ):
+
+    if time_range is not None:
+        time_start = time_range.split("--")[0]
+        time_stop  = time_range.split("--")[1]
+
+    now        = now_in_minutes()
+    time_start = HHMM_to_minutes(time_start)
+    time_stop  = HHMM_to_minutes(time_stop)
+
+    minutes_per_day = 1440
+
+    return (now       - time_start) % minutes_per_day <=\
+           (time_stop - time_start) % minutes_per_day
 
 def timer(function):
 
