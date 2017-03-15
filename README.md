@@ -145,7 +145,7 @@ In order to facilitate the human-readability of configuration specifications, th
 ./time_ICHEP_2016.py
 ```
 
-![](images/ICHEP_2016.gif)
+![](https://raw.githubusercontent.com/wdbm/shijian/master/media/ICHEP_2016.gif)
 
 # upcoming
 

@@ -35,7 +35,7 @@ from __future__ import division
 """
 
 name    = "shijian"
-version = "2017-03-09T2350Z"
+version = "2017-03-15T0033Z"
 
 import collections
 import datetime
@@ -112,7 +112,7 @@ def style_minimal_seconds(seconds):
     time_intervals = ["days", "hours", "minutes", "seconds"]
     dateutil_object = dateutil.relativedelta.relativedelta(seconds = seconds)
     return " ".join("{} {}".format(
-        getattr(dateutil_object, interval), interval
+        int(getattr(dateutil_object, interval)), interval
     ) for interval in time_intervals if getattr(dateutil_object, interval))
 
 def style_UNIX_timestamp(
