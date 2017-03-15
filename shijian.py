@@ -35,7 +35,7 @@ from __future__ import division
 """
 
 name    = "shijian"
-version = "2017-03-15T0033Z"
+version = "2017-03-15T1633Z"
 
 import collections
 import datetime
@@ -245,6 +245,9 @@ def in_daily_time_range(
     time_start = None, # string "HHMM"       e.g. "1700"
     time_stop  = None  # string "HHMM"       e.g. "1000"
     ):
+
+    if time_range is None and time_start is None and time_stop is None:
+        return None
 
     if time_range is not None:
         time_start = time_range.split("--")[0]

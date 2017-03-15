@@ -125,6 +125,14 @@ shijian.clocks.printout(style = "full")
 shijian.clocks.printout()
 ```
 
+## daily time range
+
+Whether the current time is in a specified daily time range can be tested:
+
+```Python
+shijian.in_daily_time_range(time_range = "1700--0900")
+```
+
 ## filename sequences
 
 The function `natural_sort` naturally sorts a list. The function `find_file_sequences`, for which a directory and file extension can be specified, returns a naturally-sorted list of filenames that are in a sequence or returns a dictionary of lists of filenames that are in a sequence. For example, a list something like the following could be returned:
