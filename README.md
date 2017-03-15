@@ -2,7 +2,7 @@
 
 Python change, time, file, list, statistics and other utilities
 
-# setuo
+# setup
 
 ```Bash
 sudo pip install shijian
