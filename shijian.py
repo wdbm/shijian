@@ -35,7 +35,7 @@ from __future__ import division
 """
 
 name    = "shijian"
-version = "2017-03-15T1633Z"
+version = "2017-04-11T1544Z"
 
 import collections
 import datetime
@@ -907,6 +907,8 @@ def indices_of_list_element_duplicates(x):
     for index, element in enumerate(x):
         if isinstance(element, list):
             element = tuple(element)
+        if isinstance(element, dict):
+            element = tuple(element.items())
         if element not in seen:
             seen.add(element)
         else:
