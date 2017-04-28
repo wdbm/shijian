@@ -9,7 +9,7 @@ def main():
 
     setuptools.setup(
         name             = "shijian",
-        version          = "2017.04.11.1544",
+        version          = "2017.04.28.1305",
         description      = "change, time, file, list, statistics, language and other utilities",
         long_description = long_description(),
         url              = "https://github.com/wdbm/shijian",
@@ -27,9 +27,9 @@ def main():
                            "shijian"
                            ],
         entry_points     = """
-            [console_scripts]
-            shijian = shijian:shijian
-        """
+                           [console_scripts]
+                           shijian = shijian:shijian
+                           """
     )
 
 def long_description(

@@ -34,9 +34,6 @@ from __future__ import division
 ################################################################################
 """
 
-name    = "shijian"
-version = "2017-04-11T1544Z"
-
 import collections
 import datetime
 import functools
@@ -56,6 +53,9 @@ import dateutil.relativedelta
 import numpy
 import scipy.interpolate
 import scipy.io.wavfile
+
+name    = "shijian"
+version = "2017-04-28T1305Z"
 
 def _main():
     global clocks
@@ -1264,5 +1264,23 @@ def pseudorandom_MAC_address():
         ee = random.randint(0, 255),
         ff = random.randint(0, 255)
     )
+
+def get_attribute(
+    object_instance          = None,
+    name                     = None,
+    imputation_default_value = -9
+    ):
+
+    try:
+        if "[" in name and "]" in name:
+            index = int(name.split("[")[1].split("]")[0])
+            attribute = name.split("[")[0]
+            value = getattr(object_instance, attribute)[index]
+        else:
+            value = getattr(object_instance, name)
+    except:
+        value = imputation_default_value
+
+    return value
 
 _main()
