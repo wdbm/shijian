@@ -55,7 +55,7 @@ import scipy.interpolate
 import scipy.io.wavfile
 
 name    = "shijian"
-version = "2017-04-28T1305Z"
+version = "2017-04-28T1309Z"
 
 def _main():
     global clocks
@@ -1268,7 +1268,7 @@ def pseudorandom_MAC_address():
 def get_attribute(
     object_instance          = None,
     name                     = None,
-    imputation_default_value = -9
+    imputation_default_value = None
     ):
 
     try:
