@@ -55,7 +55,7 @@ import scipy.interpolate
 import scipy.io.wavfile
 
 name    = "shijian"
-version = "2017-04-28T1309Z"
+version = "2017-04-29T2335Z"
 
 def _main():
     global clocks
@@ -1282,5 +1282,17 @@ def get_attribute(
         value = imputation_default_value
 
     return value
+
+def generate_Python_variable_names(
+    number = 10
+    ):
+
+    names = []
+    while len(names) < number:
+        name = str(uuid.uuid4()).replace("-", "")
+        if name[0].isalpha():
+            names.append(name)
+
+    return names
 
 _main()
