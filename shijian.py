@@ -55,7 +55,7 @@ import scipy.interpolate
 import scipy.io.wavfile
 
 name    = "shijian"
-version = "2017-04-29T2335Z"
+version = "2017-05-03T1732Z"
 
 def _main():
     global clocks
@@ -973,6 +973,34 @@ def split_list(
     else:
         split_list_object = [[element] for element in list_object]
     return split_list_object
+
+def ranges_edge_pairs(
+    extent       = None,
+    range_length = None
+    ):
+
+    """
+    Return the edges of ranges within an extent of some length. For example, to
+    separate 76 variables into groups of at most 20 variables, the ranges of the
+    variables could be 0 to 20, 21 to 41, 42 to 62 and 63 to 76. These range
+    edges could be returned by this function as a list of tuples:
+
+    >>> ranges_edge_pairs(
+    ...     extent       = 76, # number of variables
+    ...     range_length = 20  # maximum number of variables per plot
+    ... )
+    [(0, 20), (21, 41), (42, 62), (63, 76)]
+    """
+
+    number_of_ranges = int(math.ceil(extent / range_length))
+
+    return [
+               (
+                   index * range_length + index,
+                   min((index + 1) * range_length + index, extent)
+               )
+               for index in range(0, number_of_ranges)
+           ]
 
 def Markdown_list_to_dictionary(
     Markdown_list = None
