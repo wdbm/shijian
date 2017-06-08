@@ -33,7 +33,7 @@
 """
 
 name    = "shijian_examples_filesystem"
-version = "2017-03-09T2350Z"
+version = "2017-06-08T1147Z"
 
 import os
 
@@ -43,7 +43,7 @@ def main():
 
     # files
 
-    filename_1="test_file.txt"
+    filename_1 = "test_file.txt"
     print("attempt to create file {filename} without overwrite".format(
         filename = filename_1
     ))
@@ -64,7 +64,7 @@ def main():
 
     # directories
 
-    directory_name_1="test_directory"
+    directory_name_1 = "test_directory"
     print("attempt to create directory {directory_name} without overwrite".format(
         directory_name = directory_name_1
     ))
@@ -82,6 +82,15 @@ def main():
         directory_name = directory_name_1_proposed
     ))
     os.makedirs(directory_name_1_proposed)
+
+    # filepaths
+
+    print("filepaths at directory \"media\" with extension \"gif\": {filepaths}".format(
+        filepaths = shijian.filepaths_at_directory(
+            directory          = "media",
+            extension_required = "gif"
+        )
+    ))
 
 if __name__ == '__main__':
     main()

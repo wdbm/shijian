@@ -55,7 +55,7 @@ import scipy.interpolate
 import scipy.io.wavfile
 
 name    = "shijian"
-version = "2017-05-03T1732Z"
+version = "2017-06-08T1147Z"
 
 def _main():
     global clocks
@@ -761,6 +761,20 @@ def directory_listing(
         for filename in filenames:
             files_list.append(os.path.join(root, filename))
     return files_list
+
+## @brief return a list of filepaths at a directory, optionally filtered to
+## contain a specified extension
+def filepaths_at_directory(
+    directory          = None,
+    extension_required = None
+    ):
+    if not os.path.isdir(directory):
+        print("error -- directory {directory} not found".format(directory = directory))
+        raise(IOError)
+    filepaths = [os.path.abspath(os.path.join(directory, filename)) for filename in os.listdir(directory) if os.path.isfile(os.path.join(directory, filename))]
+    if extension_required:
+        filepaths = [filepath for filepath in filepaths if extension_required in os.path.splitext(filepath)[1]]
+    return filepaths
 
 def engage_command(
     command = None
