@@ -55,15 +55,17 @@ import scipy.interpolate
 import scipy.io.wavfile
 
 name    = "shijian"
-version = "2017-06-08T1147Z"
+version = "2017-06-26T1538Z"
 
 def _main():
+
     global clocks
     clocks = Clocks()
 
 def time_UNIX(
     style = "UNIX time S"
     ):
+
     return style_datetime_object(
         datetime_object = datetime.datetime.utcnow(),
         style           = style
@@ -72,6 +74,7 @@ def time_UNIX(
 def time_UTC(
     style = None
     ):
+
     return style_datetime_object(
         datetime_object = datetime.datetime.utcnow(),
         style           = style
@@ -81,6 +84,7 @@ def filename_time_UNIX(
     style = "UNIX time S.SSSSSS",
     extension = None
     ):
+
     filename = str(
         time_UNIX(
             style = style
@@ -91,12 +95,14 @@ def filename_time_UNIX(
     filename_proposed = propose_filename(
         filename = filename
     )
+
     return filename_proposed
 
 def filename_time_UTC(
     style     = "YYYY-MM-DDTHHMMSSZ",
     extension = None
     ):
+
     filename = style_datetime_object(
         datetime_object = datetime.datetime.utcnow(),
         style           = style
@@ -106,11 +112,13 @@ def filename_time_UTC(
     filename_proposed = propose_filename(
         filename = filename
     )
+
     return filename_proposed
 
 def style_minimal_seconds(seconds):
     time_intervals = ["days", "hours", "minutes", "seconds"]
     dateutil_object = dateutil.relativedelta.relativedelta(seconds = seconds)
+
     return " ".join("{} {}".format(
         int(getattr(dateutil_object, interval)), interval
     ) for interval in time_intervals if getattr(dateutil_object, interval))
@@ -119,6 +127,7 @@ def style_UNIX_timestamp(
     timestamp = None,
     style     = "YYYY-MM-DDTHHMMZ"
     ):
+
     return style_datetime_object(
         datetime_object = datetime.datetime.utcfromtimestamp(timestamp),
         style           = style
@@ -273,6 +282,7 @@ def timer(function):
         clock     = Clock(name = function.__name__)
         result    = function(*args, **kwargs)
         clock.stop()
+
         return result
 
     return decoration
@@ -323,6 +333,7 @@ class Clock(object):
         self._update_time = datetime.datetime.utcnow()
 
     def reset(self):
+
         self.accumulator     = datetime.timedelta(0)
         self._start_time_tmp = None
 
@@ -330,38 +341,49 @@ class Clock(object):
     # start time to the accumulator and return the accumulation. If the clock
     # does not have a start time, return the accumulation.
     def elapsed(self):
+
         if self._start_time_tmp:
             self.update()
+
         return self.accumulator
 
     def name(self):
+
         return self._name
 
     def time(self):
+
         return self.elapsed().total_seconds()
 
     def start_time(self):
         if self._start_time:
+
             return style_datetime_object(datetime_object = self._start_time)
         else:
+
             return "none"
 
     def stop_time(self):
         if self._stop_time:
+
             return style_datetime_object(datetime_object = self._stop_time)
         else:
+
             return "none"
 
     def report(self):
+
         string = "clock attribute".ljust(39)     + "value"
         string += "\nname".ljust(40)             + self.name()
         string += "\ntime start (s)".ljust(40)   + self.start_time()
         string += "\ntime stop (s)".ljust(40)    + self.stop_time()
         string += "\ntime elapsed (s)".ljust(40) + str(self.time())
         string += "\n"
+
         return string
 
     def printout(self):
+
         print(self.report())
 
 class Clocks(object):
@@ -369,6 +391,7 @@ class Clocks(object):
     def __init__(
         self
         ):
+
         self._list_of_clocks       = []
         self._default_report_style = "statistics"
 
@@ -376,12 +399,14 @@ class Clocks(object):
         self,
         clock
         ):
+
         self._list_of_clocks.append(clock)
 
     def report(
         self,
         style = None
         ):
+
         if style is None:
             style = self._default_report_style
         if self._list_of_clocks != []:
@@ -412,12 +437,14 @@ class Clocks(object):
                 string += "\n"
         else:
             string = "no clocks"
+
         return string
 
     def printout(
         self,
         style = None
         ):
+
         if style is None:
             style = self._default_report_style
         print(self.report(style = style))
@@ -427,6 +454,7 @@ class Progress():
     def __init__(
         self
         ):
+
         self.data              = []
         self.quick_calculation = False
         self.update_rate       = 1 # s
@@ -435,11 +463,13 @@ class Progress():
     def engage_quick_calculation_mode(
         self
         ):
+
         self.quick_calculation = True
 
     def disengage_quick_calculation_mode(
         self
         ):
+
         self.quick_calculation = False
 
     def add_datum(
@@ -447,6 +477,7 @@ class Progress():
         fraction = None,
         style    = None
         ):
+
         if len(self.data) == 0:
             self.data.append((fraction, time_UNIX()))
         elif self.quick_calculation is True:
@@ -457,13 +488,17 @@ class Progress():
                 self.clock.start()
         else:
             self.data.append((fraction, time_UNIX()))
+
         return self.status(style = style)
 
     def estimated_time_of_completion(
         self
         ):
+
         if len(self.data) <= 1:
+
             return 0
+
         else:
             try:
                 model_values = model_linear(
@@ -477,17 +512,22 @@ class Progress():
             except:
                 y = 0
             datetime_object = datetime.datetime.fromtimestamp(int(y))
+
             return datetime_object
 
     # estimated time of arrival
     def ETA(
         self
         ):
+
         if len(self.data) <= 1:
+
             return style_datetime_object(
                 datetime_object = datetime.datetime.now()
             )
+
         else:
+
             return style_datetime_object(
                 datetime_object = self.estimated_time_of_completion()
             )
@@ -496,24 +536,32 @@ class Progress():
     def ETR(
         self
         ):
+
         if len(self.data) <= 1:
+
             return 0
+
         else:
             delta_time = \
                 self.estimated_time_of_completion() - datetime.datetime.now()
             if delta_time.total_seconds() >= 0:
+
                 return delta_time.total_seconds()
+
             else:
+
                 return 0
 
     def fraction(
         self
         ):
+
         return self.data[-1][0]
 
     def percentage(
         self
         ):
+
         return 100 * self.fraction()
 
     def status(
@@ -524,6 +572,7 @@ class Progress():
             message =\
                 "{percentage:.2f}% complete; " +\
                 "estimated completion time: {ETA} ({ETR:.2f} s)\r"
+
             return message.format(
                 percentage = self.percentage(),
                 ETA        = self.ETA(),
@@ -536,6 +585,7 @@ def UID():
 def unique_number(
     style = None
     ):
+
     # mode: integer 3 significant figures
     if style == "integer 3 significant figures":
         initial_number = 100
@@ -552,7 +602,9 @@ def unique_number(
             style == "integer 3 significant figures" and \
             unique_numbers_3_significant_figures[-1] > 999:
             raise Exception
+
         return unique_numbers_3_significant_figures[-1]
+
     # mode: integer
     else:
         initial_number = 1
@@ -563,9 +615,11 @@ def unique_number(
             unique_numbers.append(initial_number)
         else:
             unique_numbers.append(unique_numbers[-1] + 1)
+
         return unique_numbers[-1]
 
 def unique_3_digit_number():
+
     return unique_number(style = "integer 3 significant figures")
 
 ## @brief make text filename or URL safe
@@ -575,6 +629,7 @@ def slugify(
     URL        = False,
     return_str = True
     ):
+
     if type(text) is not unicode:
         text = unicode(text, "utf-8")
     if filename and not URL:
@@ -587,6 +642,7 @@ def slugify(
         text = unicode(re.sub("[-\s]+", "-", text))
     if return_str:
         text = str(text)
+
     return text
 
 ## @brief propose a filename
@@ -605,6 +661,7 @@ def propose_filename(
     slugify_filename               = True,
     exclude_extension_from_slugify = True
     ):
+
     # If no file name is specified, generate one.
     if not filename:
         filename = time_UTC()
@@ -643,6 +700,7 @@ def ensure_platform_release(
     require    = True,
     warn       = False
     ):
+
     import platform
     release = platform.release()
     if keyphrase not in release:
@@ -658,7 +716,10 @@ def ensure_platform_release(
             #log.fatal(message)
             raise(EnvironmentError)
 
-def ensure_program_available(program):
+def ensure_program_available(
+    program
+    ):
+
     #log.debug("ensure program {program} available".format(
     #    program = program
     #))
@@ -672,22 +733,32 @@ def ensure_program_available(program):
         #    program = program
         #))
 
-def which(program):
+def which(
+    program
+    ):
+
     def is_exe(fpath):
         return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
     fpath, fname = os.path.split(program)
     if fpath:
         if is_exe(program):
+
             return(program)
+
     else:
         for path in os.environ["PATH"].split(os.pathsep):
             path = path.strip('"')
             exe_file = os.path.join(path, program)
             if is_exe(exe_file):
+
                 return exe_file
+
     return None
 
-def running(program):
+def running(
+    program
+    ):
+
     results = subprocess.Popen(
         ["ps", "-A"],
         stdout = subprocess.PIPE
@@ -696,11 +767,17 @@ def running(program):
         line for line in results if program in line and "defunct" not in line
     ]
     if matches_current:
+
         return True
+
     else:
+
         return False
 
-def ensure_file_existence(filename):
+def ensure_file_existence(
+    filename
+    ):
+
     #log.debug("ensure existence of file {filename}".format(
     #    filename = filename
     #))
@@ -724,6 +801,7 @@ def find_file_sequences(
     directory                  = ".",
     return_first_sequence_only = True,
     ):
+
     filenames_of_directory = os.listdir(directory)
     filenames_found = [
         filename for filename in filenames_of_directory if re.match(
@@ -739,14 +817,18 @@ def find_file_sequences(
         first_key_identified = filename_sequences.iterkeys().next()
         filename_sequence = \
             natural_sort(filename_sequences[first_key_identified])
+
         return filename_sequence
+
     else:
+
         return filename_sequences
 
 ## @brief return a list of files at a specified directory
 def ls_files(
     directory = "."
     ):
+
     return([filename for filename in os.listdir(directory) if os.path.isfile(
         os.path.join(directory, filename)
     )])
@@ -756,10 +838,12 @@ def ls_files(
 def directory_listing(
     directory = ".",
     ):
+
     files_list = []
     for root, directories, filenames in os.walk(directory):
         for filename in filenames:
             files_list.append(os.path.join(root, filename))
+
     return files_list
 
 ## @brief return a list of filepaths at a directory, optionally filtered to
@@ -768,17 +852,20 @@ def filepaths_at_directory(
     directory          = None,
     extension_required = None
     ):
+
     if not os.path.isdir(directory):
         print("error -- directory {directory} not found".format(directory = directory))
         raise(IOError)
     filepaths = [os.path.abspath(os.path.join(directory, filename)) for filename in os.listdir(directory) if os.path.isfile(os.path.join(directory, filename))]
     if extension_required:
         filepaths = [filepath for filepath in filepaths if extension_required in os.path.splitext(filepath)[1]]
+
     return filepaths
 
 def engage_command(
     command = None
     ):
+
     process = subprocess.Popen(
         [command],
         shell      = True,
@@ -787,6 +874,7 @@ def engage_command(
     )
     process.wait()
     output, errors = process.communicate()
+
     return output
 
 def percentage_power():
@@ -855,6 +943,7 @@ class List_Consensus(list):
         self,
         *args
         ):
+
         # list initialisation
         if sys.version_info >= (3, 0):
             super().__init__(self, *args)
@@ -866,6 +955,7 @@ class List_Consensus(list):
         self,
         size = None
         ):
+
         if size is not None:
             self.size_constraint = size
 
@@ -873,10 +963,12 @@ class List_Consensus(list):
         self,
         size = None
         ):
+
         """
         This function removes the least frequent elements until the size
         constraint is met.
         """
+
         if size is None:
             size = self.size_constraint
         while sys.getsizeof(self) > size:
@@ -890,6 +982,7 @@ class List_Consensus(list):
         ensure_size = True,
         size        = None
         ):
+
         if size is None:
             size = self.size_constraint
         list.append(self, element)
@@ -901,22 +994,33 @@ class List_Consensus(list):
     def consensus(
         self
         ):
+
         try:
             element_frequencies = collections.Counter(self)
+
             return element_frequencies.most_common(1)[0][0]
+
         except:
+
             return None
 
 ## @brief return a naturally-sorted list
 #  @detail This function returns a naturally-sorted list from an input list.
-def natural_sort(list_object):
+def natural_sort(
+    list_object
+    ):
+
     convert = lambda text: int(text) if text.isdigit() else text.lower()
     alphanumeric_key = lambda key: [
         convert(text) for text in re.split("([0-9]+)", key)
     ]
+
     return sorted(list_object, key = alphanumeric_key)
 
-def indices_of_list_element_duplicates(x):
+def indices_of_list_element_duplicates(
+    x
+    ):
+
     seen = set()
     for index, element in enumerate(x):
         if isinstance(element, list):
@@ -947,16 +1051,24 @@ def select_spread(
     list_of_elements   = None,
     number_of_elements = None
     ):
+
     """
     This function returns the specified number of elements of a list spread
     approximately evenly.
     """
+
     if len(list_of_elements) <= number_of_elements:
+
         return list_of_elements
+
     if number_of_elements == 0:
+
         return []
+
     if number_of_elements == 1:
+
         return [list_of_elements[int(round((len(list_of_elements) - 1) / 2))]]
+
     return \
         [list_of_elements[int(round((len(list_of_elements) - 1) /\
         (2 * number_of_elements)))]] +\
@@ -967,12 +1079,14 @@ def split_list(
     list_object = None,
     granularity = None
     ):
+
     """
     This function splits a list into a specified number of lists. It returns a
     list of lists that correspond to these parts. Negative numbers of parts are
     not accepted and numbers of parts greater than the number of elements in the
     list result in the maximum possible number of lists being returned.
     """
+
     if granularity < 0:
         raise Exception("negative granularity")
     mean_length = len(list_object) / float(granularity)
@@ -986,6 +1100,7 @@ def split_list(
             last_length += mean_length
     else:
         split_list_object = [[element] for element in list_object]
+
     return split_list_object
 
 def ranges_edge_pairs(
@@ -1019,6 +1134,7 @@ def ranges_edge_pairs(
 def Markdown_list_to_dictionary(
     Markdown_list = None
     ):
+
     line = re.compile(r"( *)- ([^:\n]+)(?:: ([^\n]*))?\n?")
     depth = 0
     stack = [{}]
@@ -1033,11 +1149,13 @@ def Markdown_list_to_dictionary(
             # new branch
             stack.append(stack[-1][name])
         depth = indent
+
     return stack[0]
 
 def Markdown_list_to_OrderedDict(
     Markdown_list = None
     ):
+
     line = re.compile(r"( *)- ([^:\n]+)(?:: ([^\n]*))?\n?")
     depth = 0
     stack = [collections.OrderedDict()]
@@ -1052,12 +1170,15 @@ def Markdown_list_to_OrderedDict(
             # new branch
             stack.append(stack[-1][name])
         depth = indent
+
     return stack[0]
 
 def open_configuration(
     filename = None
     ):
+
     file_configuration = open(filename, "r").read()
+
     return Markdown_list_to_OrderedDict(file_configuration)
 
 def change_list_resolution(
@@ -1066,6 +1187,7 @@ def change_list_resolution(
     interpolation_type = "linear",
     dimensions         = 1
     ):
+
     y1 = values
     x1 = range(0, len(values))
     interpolation = scipy.interpolate.interp1d(
@@ -1076,14 +1198,18 @@ def change_list_resolution(
     x2 = list(numpy.linspace(min(x1), max(x1), length))
     y2 = [float(interpolation(x)) for x in x2]
     if dimensions == 1:
+
         return y2
+
     elif dimensions == 2:
+
         return (x2, y2)
 
 def change_waveform_to_rectangle_waveform(
     values             = None,
     fraction_amplitude = 0.01
     ):
+
     values[values >= 0] = fraction_amplitude * max(values)
     values[values <  0] = fraction_amplitude * min(values)
     values[:] = [x * (1 / fraction_amplitude) for x in values] 
@@ -1095,6 +1221,7 @@ def change_sound_file_waveform_to_sound_file_rectangle_waveform(
     overwrite                   = False,
     fraction_amplitude          = 0.01
     ):
+
     if filename_rectangle_waveform is None:
         filename_rectangle_waveform = filename_waveform
     filename_rectangle_waveform = propose_filename(
@@ -1115,8 +1242,10 @@ def normalize(
     x,
     summation = None
     ):
+
     if summation is None:
         summation = sum(x) # normalize to unity
+
     return [element/summation for element in x]
 
 def rescale(
@@ -1124,22 +1253,28 @@ def rescale(
     minimum = 0,
     maximum = 1
     ):
+
     return [
         minimum + (element - min(x)) * ((maximum - minimum)\
         / (max(x) - min(x))) for element in x
     ]
 
-def composite_variable(x):
+def composite_variable(
+    x
+    ):
+
     k = len(x) + 1
     variable = 0
     for index, element in enumerate(x):
         variable += k**(index - 1) * element
+
     return variable
 
 def model_linear(
     data              = None,
     quick_calculation = False
     ):
+
     if quick_calculation is True:
         data = select_spread(data, 10)
     n = len(data)
@@ -1157,11 +1292,13 @@ def model_linear(
     b1 = (sum(xy_values) - (sum(x_values) * sum(y_values)) / n) / \
          (sum(x_squared_values) - (sum(x_values) ** 2) / n)
     b0 = (sum(y_values) - b1 * sum(x_values)) / n
+
     return (b0, b1)
 
 def import_object(
     filename  = None
     ):
+
     return pickle.load(open(filename, "rb"))
 
 def export_object(
@@ -1169,6 +1306,7 @@ def export_object(
     filename  = None,
     overwrite = False
     ):
+
     filename = propose_filename(
         filename  = filename,
         overwrite = overwrite
@@ -1176,6 +1314,7 @@ def export_object(
     pickle.dump(x, open(filename, "wb"))
 
 def string_to_bool(x):
+
     return x.lower() in ("yes", "true", "t", "1")
 
 def number_to_English_text(
@@ -1279,11 +1418,13 @@ def number_to_English_text(
             number_words = tens[number_2] + ones[number_1] + thousand + number_words
         if number_3 > 0:
             number_words = ones[number_3] + "hundred " + number_words
+
     return number_words.strip(" ")
 
 def replace_numbers_in_text_with_English_text(
     text = None
     ):
+
     # Split the text into text and numbers.
     text = re.split("(\d+)", text)
     if text[-1] == "":
@@ -1295,9 +1436,54 @@ def replace_numbers_in_text_with_English_text(
             text_translated.append(number_to_English_text(number = text_segment))
         else:
             text_translated.append(text_segment)
+
     return "".join(text_translated)
 
+def split_into_sentences(
+    text = None
+    ):
+
+    capitals = "([A-Z])"
+    prefixes = "(Dr|dr|Hon|hon|Mr|mr|Mrs|mrs|Ms|ms|St|st)[.]"
+    suffixes = "(Co|co|Inc|inc|Jr|jr|Ltd|ltd|Sr|sr)"
+    starters = "(But\s|Dr|He\s|However\s|It\s|Mr|Mrs|Ms|Our\s|She\s|That\s|Their\s|They\s|This\s|We\s|Wherever)"
+    acronyms = "([A-Z][.][A-Z][.](?:[A-Z][.])?)"
+    websites = "[.](com|gov|io|net|org|pro)"
+
+    text = " " + text + "  "
+    text = text.replace("\n", " ")
+    text = re.sub(prefixes, "\\1<prd>", text)
+    text = re.sub(websites, "<prd>\\1", text)
+    if "Ph.D" in text: text = text.replace("Ph.D.", "Ph<prd>D<prd>")
+    text = re.sub("\s" + capitals + "[.] ", " \\1<prd> ", text)
+    text = re.sub(acronyms + " " + starters, "\\1<stop> \\2", text)
+    text = re.sub(capitals + "[.]" + capitals + "[.]" + capitals + "[.]","\\1<prd>\\2<prd>\\3<prd>", text)
+    text = re.sub(capitals + "[.]" + capitals + "[.]", "\\1<prd>\\2<prd>", text)
+    text = re.sub(" " + suffixes + "[.] " + starters, " \\1<stop> \\2", text)
+    text = re.sub(" " + suffixes + "[.]", " \\1<prd>", text)
+    text = re.sub(" " + capitals + "[.]", " \\1<prd>", text)
+    if "”" in text: text = text.replace(".”", "”.")
+    if "\"" in text: text = text.replace(".\"", "\".")
+    if "!" in text: text = text.replace("!\"", "\"!")
+    if "?" in text: text = text.replace("?\"", "\"?")
+    text = text.replace(".", ".<stop>")
+    text = text.replace("?", "?<stop>")
+    text = text.replace("!", "!<stop>")
+    text = text.replace("<prd>", ".")
+    sentences = text.split("<stop>")
+    sentences = sentences[:-1]
+    sentences = [sentence.strip() for sentence in sentences]
+
+    return sentences
+
+def trim_incomplete_sentences(
+    text = None
+    ):
+
+    return " ".join(split_into_sentences(text)[1:])
+
 def pseudorandom_MAC_address():
+
     return "{aa:02x}:{bb:02x}:{cc:02x}:{dd:02x}:{ee:02x}:{ff:02x}".format(
         aa = random.randint(0, 255),
         bb = random.randint(0, 255),
