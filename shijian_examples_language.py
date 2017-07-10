@@ -32,18 +32,18 @@
 ################################################################################
 """
 
-name    = "shijian_examples_language"
-version = "2017-03-09T2350Z"
-
 import pyprel
 import shijian
+
+name    = "shijian_examples_language"
+version = "2017-07-10T2155Z"
 
 def main():
 
     pyprel.print_line()
 
     number = 1234567890123
-    print("number {number} in English text:\n{number_text}".format(
+    print("number {number} in English text:\n\n{number_text}".format(
         number = number,
         number_text = shijian.number_to_English_text(number)
     ))
@@ -51,10 +51,18 @@ def main():
     pyprel.print_line()
 
     text = "It is 03:14 and I have 3 apples in 400 wormholes."
-    print("replace numbers with English text in the following text:\n{text}".format(
+    print("replace numbers with English text in the following text:\n{text}\n".format(
         text = text
     ))
     print(shijian.replace_numbers_in_text_with_English_text(text = text))
+
+    pyprel.print_line()
+
+    text = "I've ten important invasions to consider."
+    print("change contractions to full words and change numbers to digits in the following text:\n{text}\n".format(
+        text = text
+    ))
+    print(shijian.replace_contractions_with_full_words_and_replace_numbers_with_digits(text = text))
 
     pyprel.print_line()
 

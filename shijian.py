@@ -55,7 +55,7 @@ import scipy.interpolate
 import scipy.io.wavfile
 
 name    = "shijian"
-version = "2017-06-26T1538Z"
+version = "2017-07-10T2155Z"
 
 def _main():
 
@@ -1438,6 +1438,156 @@ def replace_numbers_in_text_with_English_text(
             text_translated.append(text_segment)
 
     return "".join(text_translated)
+
+def replace_contractions_with_full_words_and_replace_numbers_with_digits(
+    text            = None,
+    remove_articles = True
+    ):
+
+    """
+    This function replaces contractions with full words and replaces numbers
+    with digits in specified text. There is the option to remove articles.
+    """
+
+    words = text.split()
+
+    text_translated = ""
+
+    for word in words:
+
+        if remove_articles and word in ["a", "an", "the"]:
+            continue
+
+        contractions_expansions = {
+            "ain't":       "is not",
+            "aren't":      "are not",
+            "can't":       "can not",
+            "could've":    "could have",
+            "couldn't":    "could not",
+            "didn't":      "did not",
+            "doesn't":     "does not",
+            "don't":       "do not",
+            "gonna":       "going to",
+            "gotta":       "got to",
+            "hadn't":      "had not",
+            "hasn't":      "has not",
+            "haven't":     "have not",
+            "he'd":        "he would",
+            "he'll":       "he will",
+            "he's":        "he is",
+            "how'd":       "how did",
+            "how'll":      "how will",
+            "how's":       "how is",
+            "I'd":         "I would",
+            "I'll":        "I will",
+            "I'm":         "I am",
+            "I've":        "I have",
+            "isn't":       "is not",
+            "it'd":        "it would",
+            "it'll":       "it will",
+            "it's":        "it is",
+            "mightn't":    "might not",
+            "might've":    "might have",
+            "mustn't":     "must not",
+            "must've":     "must have",
+            "needn't":     "need not",
+            "oughtn't":    "ought not",
+            "shan't":      "shall not",
+            "she'd":       "she would",
+            "she'll":      "she will",
+            "she's":       "she is",
+            "shouldn't":   "should not",
+            "should've":   "should have",
+            "somebody's":  "somebody is",
+            "someone'd":   "someone would",
+            "someone'll":  "someone will",
+            "someone's":   "someone is",
+            "that'll":     "that will",
+            "that's":      "that is",
+            "that'd":      "that would",
+            "there'd":     "there would",
+            "there're":    "there are",
+            "there's":     "there is",
+            "they'd":      "they would",
+            "they'll":     "they will",
+            "they're":     "they are",
+            "they've":     "they have",
+            "wasn't":      "was not",
+            "we'd":        "we would",
+            "we'll":       "we will",
+            "we're":       "we are",
+            "we've":       "we have",
+            "weren't":     "were not",
+            "what'd":      "what did",
+            "what'll":     "what will",
+            "what're":     "what are",
+            "what's":      "what is",
+            "whats":       "what is",
+            "what've":     "what have",
+            "when's":      "when is",
+            "when'd":      "when did",
+            "where'd":     "where did",
+            "where's":     "where is",
+            "where've":    "where have",
+            "who'd":       "who would",
+            "who'd've":    "who would have",
+            "who'll":      "who will",
+            "who're":      "who are",
+            "who's":       "who is",
+            "who've":      "who have",
+            "why'd":       "why did",
+            "why're":      "why are",
+            "why's":       "why is",
+            "won't":       "will not",
+            "won't've":    "will not have",
+            "would've":    "would have",
+            "wouldn't":    "would not",
+            "wouldn't've": "would not have",
+            "y'all":       "you all",
+            "ya'll":       "you all",
+            "you'd":       "you would",
+            "you'd've":    "you would have",
+            "you'll":      "you will",
+            "y'aint":      "you are not",
+            "y'ain't":     "you are not",
+            "you're":      "you are",
+            "you've":      "you have"
+        }
+
+        if word in list(contractions_expansions.keys()):
+            word = contractions_expansions[word]
+
+        numbers_digits = {
+            "zero":       "0",
+            "one":        "1",
+            "two":        "2",
+            "three":      "3",
+            "four":       "4",
+            "five":       "5",
+            "six":        "6",
+            "seven":      "7",
+            "eight":      "8",
+            "nine":       "9",
+            "ten":       "10",
+            "eleven":    "11",
+            "twelve":    "12",
+            "thirteen":  "13",
+            "fourteen":  "14",
+            "fifteen":   "15",
+            "sixteen":   "16",
+            "seventeen": "17",
+            "eighteen":  "18",
+            "nineteen":  "19",
+            "twenty":    "20"
+        }
+
+        if word in list(numbers_digits.keys()):
+            word = numbers_digits[word]
+
+        text_translated += " " + word
+        text_translated = text_translated.strip()
+
+    return text_translated
 
 def split_into_sentences(
     text = None
