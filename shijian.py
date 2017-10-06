@@ -55,7 +55,7 @@ import scipy.interpolate
 import scipy.io.wavfile
 
 name    = "shijian"
-version = "2017-07-10T2155Z"
+version = "2017-10-06T1718Z"
 
 def _main():
 
@@ -630,16 +630,18 @@ def slugify(
     return_str = True
     ):
 
-    if type(text) is not unicode:
+    if not sys.version_info >= (3, 0):
         text = unicode(text, "utf-8")
+    text = unicodedata.normalize("NFKD", text)
+    text = text.encode("ascii", "ignore")
+    text = text.decode("utf-8")
+    text = re.sub("[^\w\s-]", "", text)
+    text = text.strip()
     if filename and not URL:
-        text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore")
-        text = unicode(re.sub("[^\w\s-]", "", text).strip())
-        text = unicode(re.sub("[\s]+", "_", text))
+        text = re.sub("[\s]+", "_", text)
     elif URL:
-        text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore")
-        text = unicode(re.sub("[^\w\s-]", "", text).strip().lower())
-        text = unicode(re.sub("[-\s]+", "-", text))
+        text = text.lower()
+        text = re.sub("[-\s]+", "-", text)
     if return_str:
         text = str(text)
 
@@ -946,7 +948,7 @@ class List_Consensus(list):
 
         # list initialisation
         if sys.version_info >= (3, 0):
-            super().__init__(self, *args)
+            super().__init__(*args)
         else:
             super(List_Consensus, self).__init__(*args)
         self.size_constraint = 150 # bytes
