@@ -55,7 +55,7 @@ import scipy.interpolate
 import scipy.io.wavfile
 
 name    = "shijian"
-version = "2018-01-09T1512Z"
+version = "2018-01-09T1816Z"
 
 def _main():
 
@@ -1276,6 +1276,22 @@ def export_object(
 def string_to_bool(x):
 
     return x.lower() in ("yes", "true", "t", "1")
+
+def ustr(text):
+
+    """
+    Convert a string to Python 2 unicode or Python 3 string as appropriate to
+    the version of Python in use.
+    """
+
+    if text is not None:
+        if sys.version_info >= (3, 0):
+            return str(text)
+        else:
+            return unicode(text)
+    else:
+        return text
+
 
 def number_to_English_text(
     number = None
