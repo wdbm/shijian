@@ -55,7 +55,7 @@ import scipy.interpolate
 import scipy.io.wavfile
 
 name    = "shijian"
-version = "2018-01-09T0001Z"
+version = "2018-01-09T1512Z"
 
 def _main():
 
@@ -95,7 +95,6 @@ def filename_time_UNIX(
     filename_proposed = propose_filename(
         filename = filename
     )
-
     return filename_proposed
 
 def filename_time_UTC(
@@ -112,13 +111,12 @@ def filename_time_UTC(
     filename_proposed = propose_filename(
         filename = filename
     )
-
     return filename_proposed
 
 def style_minimal_seconds(seconds):
+
     time_intervals = ["days", "hours", "minutes", "seconds"]
     dateutil_object = dateutil.relativedelta.relativedelta(seconds = seconds)
-
     return " ".join("{} {}".format(
         int(getattr(dateutil_object, interval)), interval
     ) for interval in time_intervals if getattr(dateutil_object, interval))
@@ -246,7 +244,6 @@ def HHMM_to_minutes(
 def now_in_minutes():
 
     now = datetime.datetime.utcnow()
-
     return 60 * now.hour + now.minute
 
 def in_daily_time_range(
@@ -257,17 +254,13 @@ def in_daily_time_range(
 
     if time_range is None and time_start is None and time_stop is None:
         return None
-
     if time_range is not None:
         time_start = time_range.split("--")[0]
         time_stop  = time_range.split("--")[1]
-
     now        = now_in_minutes()
     time_start = HHMM_to_minutes(time_start)
     time_stop  = HHMM_to_minutes(time_stop)
-
     minutes_per_day = 1440
-
     return (now       - time_start) % minutes_per_day <=\
            (time_stop - time_start) % minutes_per_day
 
@@ -282,7 +275,6 @@ def timer(function):
         clock     = Clock(name = function.__name__)
         result    = function(*args, **kwargs)
         clock.stop()
-
         return result
 
     return decoration
@@ -437,7 +429,6 @@ class Clocks(object):
                 string += "\n"
         else:
             string = "no clocks"
-
         return string
 
     def printout(
@@ -746,34 +737,29 @@ def which(
         if is_exe(program):
 
             return(program)
-
     else:
         for path in os.environ["PATH"].split(os.pathsep):
             path = path.strip('"')
             exe_file = os.path.join(path, program)
             if is_exe(exe_file):
-
                 return exe_file
-
     return None
 
 def running(
     program
     ):
 
+    program = str.encode(program)
     results = subprocess.Popen(
         ["ps", "-A"],
         stdout = subprocess.PIPE
-    ).communicate()[0].split("\n")
+    ).communicate()[0].split(b"\n")
     matches_current = [
-        line for line in results if program in line and "defunct" not in line
+        line for line in results if program in line and b"defunct" not in line
     ]
     if matches_current:
-
         return True
-
     else:
-
         return False
 
 def ensure_file_existence(
@@ -819,11 +805,8 @@ def find_file_sequences(
         first_key_identified = next(iter(filename_sequences.keys()))
         filename_sequence = \
             natural_sort(filename_sequences[first_key_identified])
-
         return filename_sequence
-
     else:
-
         return filename_sequences
 
 ## @brief return a list of files at a specified directory
@@ -845,7 +828,6 @@ def directory_listing(
     for root, directories, filenames in os.walk(directory):
         for filename in filenames:
             files_list.append(os.path.join(root, filename))
-
     return files_list
 
 ## @brief return a list of filepaths at a directory, optionally filtered to
@@ -861,7 +843,6 @@ def filepaths_at_directory(
     filepaths = [os.path.abspath(os.path.join(directory, filename)) for filename in os.listdir(directory) if os.path.isfile(os.path.join(directory, filename))]
     if extension_required:
         filepaths = [filepath for filepath in filepaths if extension_required in os.path.splitext(filepath)[1]]
-
     return filepaths
 
 def engage_command(
@@ -876,7 +857,6 @@ def engage_command(
     )
     process.wait()
     output, errors = process.communicate()
-
     return output
 
 def percentage_power():
@@ -913,7 +893,6 @@ def percentage_power():
         percentage_power = "100%"
     else:
         percentage_power = None
-
     return percentage_power
 
 def convert_type_list_elements(
@@ -999,11 +978,8 @@ class List_Consensus(list):
 
         try:
             element_frequencies = collections.Counter(self)
-
             return element_frequencies.most_common(1)[0][0]
-
         except:
-
             return None
 
 ## @brief return a naturally-sorted list
@@ -1016,7 +992,6 @@ def natural_sort(
     alphanumeric_key = lambda key: [
         convert(text) for text in re.split("([0-9]+)", key)
     ]
-
     return sorted(list_object, key = alphanumeric_key)
 
 def indices_of_list_element_duplicates(
@@ -1060,17 +1035,11 @@ def select_spread(
     """
 
     if len(list_of_elements) <= number_of_elements:
-
         return list_of_elements
-
     if number_of_elements == 0:
-
         return []
-
     if number_of_elements == 1:
-
         return [list_of_elements[int(round((len(list_of_elements) - 1) / 2))]]
-
     return \
         [list_of_elements[int(round((len(list_of_elements) - 1) /\
         (2 * number_of_elements)))]] +\
@@ -1102,7 +1071,6 @@ def split_list(
             last_length += mean_length
     else:
         split_list_object = [[element] for element in list_object]
-
     return split_list_object
 
 def ranges_edge_pairs(
@@ -1124,7 +1092,6 @@ def ranges_edge_pairs(
     """
 
     number_of_ranges = int(math.ceil(extent / range_length))
-
     return [
                (
                    index * range_length + index,
@@ -1151,7 +1118,6 @@ def Markdown_list_to_dictionary(
             # new branch
             stack.append(stack[-1][name])
         depth = indent
-
     return stack[0]
 
 def Markdown_list_to_OrderedDict(
@@ -1172,7 +1138,6 @@ def Markdown_list_to_OrderedDict(
             # new branch
             stack.append(stack[-1][name])
         depth = indent
-
     return stack[0]
 
 def open_configuration(
@@ -1180,7 +1145,6 @@ def open_configuration(
     ):
 
     file_configuration = open(filename, "r").read()
-
     return Markdown_list_to_OrderedDict(file_configuration)
 
 def change_list_resolution(
@@ -1200,11 +1164,8 @@ def change_list_resolution(
     x2 = list(numpy.linspace(min(x1), max(x1), length))
     y2 = [float(interpolation(x)) for x in x2]
     if dimensions == 1:
-
         return y2
-
     elif dimensions == 2:
-
         return (x2, y2)
 
 def change_waveform_to_rectangle_waveform(
@@ -1247,7 +1208,6 @@ def normalize(
 
     if summation is None:
         summation = sum(x) # normalize to unity
-
     return [element/summation for element in x]
 
 def rescale(
@@ -1269,7 +1229,6 @@ def composite_variable(
     variable = 0
     for index, element in enumerate(x):
         variable += k**(index - 1) * element
-
     return variable
 
 def model_linear(
@@ -1294,7 +1253,6 @@ def model_linear(
     b1 = (sum(xy_values) - (sum(x_values) * sum(y_values)) / n) / \
          (sum(x_squared_values) - (sum(x_values) ** 2) / n)
     b0 = (sum(y_values) - b1 * sum(x_values)) / n
-
     return (b0, b1)
 
 def import_object(
@@ -1420,7 +1378,6 @@ def number_to_English_text(
             number_words = tens[number_2] + ones[number_1] + thousand + number_words
         if number_3 > 0:
             number_words = ones[number_3] + "hundred " + number_words
-
     return number_words.strip(" ")
 
 def replace_numbers_in_text_with_English_text(
@@ -1660,7 +1617,6 @@ def get_attribute(
             value = getattr(object_instance, name)
     except:
         value = imputation_default_value
-
     return value
 
 def generate_Python_variable_names(
@@ -1672,7 +1628,6 @@ def generate_Python_variable_names(
         name = str(uuid.uuid4()).replace("-", "")
         if name[0].isalpha():
             names.append(name)
-
     return names
 
 _main()
