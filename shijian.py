@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import division
 
 """
 ################################################################################
@@ -34,6 +33,7 @@ from __future__ import division
 ################################################################################
 """
 
+from __future__ import division
 import collections
 import datetime
 import functools
@@ -55,7 +55,7 @@ import scipy.interpolate
 import scipy.io.wavfile
 
 name    = "shijian"
-version = "2017-10-06T1718Z"
+version = "2018-01-09T0001Z"
 
 def _main():
 
@@ -424,7 +424,7 @@ class Clocks(object):
                 # Create a report, calculating the average value for each clock
                 # type.
                 string = "clock type".ljust(39) + "mean time (s)"
-                for name, values in dictionary_of_clock_types.items():
+                for name, values in list(dictionary_of_clock_types.items()):
                     string += "\n" +\
                         str(name).ljust(39) + str(sum(values)/len(values))
                 string += "\n"
@@ -449,7 +449,7 @@ class Clocks(object):
             style = self._default_report_style
         print(self.report(style = style))
 
-class Progress():
+class Progress(object):
 
     def __init__(
         self
@@ -816,7 +816,7 @@ def find_file_sequences(
         pattern = re.sub("\d+", "XXX", filename)
         filename_sequences[pattern].append(filename)
     if return_first_sequence_only is True:
-        first_key_identified = filename_sequences.iterkeys().next()
+        first_key_identified = next(iter(filename_sequences.keys()))
         filename_sequence = \
             natural_sort(filename_sequences[first_key_identified])
 
@@ -1191,7 +1191,7 @@ def change_list_resolution(
     ):
 
     y1 = values
-    x1 = range(0, len(values))
+    x1 = list(range(0, len(values)))
     interpolation = scipy.interpolate.interp1d(
         x1,
         y1,
