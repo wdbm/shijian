@@ -60,7 +60,7 @@ from sklearn.preprocessing import MinMaxScaler
 import seaborn as sns
 
 name    = "shijian"
-version = "2018-01-29T1547Z"
+version = "2018-01-29T1704Z"
 
 def _main():
 
