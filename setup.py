@@ -9,7 +9,7 @@ def main():
 
     setuptools.setup(
         name             = "shijian",
-        version          = "2018.01.09.1816",
+        version          = "2018.01.29.1547",
         description      = "change, time, file, list, statistics, language and other utilities",
         long_description = long_description(),
         url              = "https://github.com/wdbm/shijian",
@@ -20,11 +20,15 @@ def main():
                            "shijian"
                            ],
         install_requires = [
+                           "pandas",
                            "python-dateutil",
+                           "matplotlib",
                            "numpy",
                            "pyprel",
                            "scipy",
-                           "shijian"
+                           "seaborn",
+                           "shijian",
+                           "sklearn"
                            ],
         entry_points     = """
                            [console_scripts]

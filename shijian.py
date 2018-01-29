@@ -48,14 +48,19 @@ import sys
 import time
 import unicodedata
 import uuid
+import warnings
 
 import dateutil.relativedelta
+import matplotlib.pyplot as plt
 import numpy
+import pandas as pd
 import scipy.interpolate
 import scipy.io.wavfile
+from sklearn.preprocessing import MinMaxScaler
+import seaborn as sns
 
 name    = "shijian"
-version = "2018-01-09T1816Z"
+version = "2018-01-29T1547Z"
 
 def _main():
 
@@ -1645,5 +1650,132 @@ def generate_Python_variable_names(
         if name[0].isalpha():
             names.append(name)
     return names
+
+def add_time_variables(df, reindex = True):
+    """
+    Return a DataFrame with variables for weekday index, weekday name, timedelta
+    through day, fraction through day, hours through day and days through week
+    added, optionally with the index set to datetime and the variable `datetime`
+    removed. It is assumed that the variable `datetime` exists.
+    """
+    df["datetime"]             = pd.to_datetime(df["datetime"])
+    df["weekday"]              = df["datetime"].dt.weekday
+    df["weekday_name"]         = df["datetime"].dt.weekday_name
+    df["time_through_day"]     = df["datetime"].map(
+                                     lambda x: x - datetime.datetime.combine(
+                                         x.date(),
+                                         datetime.time()
+                                     )
+                                 )
+    df["fraction_through_day"] = df["time_through_day"].map(
+                                     lambda x: x / datetime.timedelta(hours = 24)
+                                 )
+    df["hour"]                 = df["datetime"].dt.hour
+    df["hours_through_day"]    = df["fraction_through_day"] * 24
+    df["days_through_week"]    = df.apply(
+                                     lambda row: row["weekday"] + row["fraction_through_day"],
+                                     axis = 1
+                                 )
+    df["days_through_year"]    = df["datetime"].dt.dayofyear
+    df.index                   = df["datetime"]
+    del df["datetime"]
+    return df
+
+def daily_plots(
+    df,
+    variable,
+    renormalize = True
+    ):
+    """
+    Create daily plots of a variable in a DataFrame, optionally renormalized. It
+    is assumed that the DataFrame index is datetime.
+    """
+    days = []
+    for group in df.groupby(df.index.day):
+        days.append(group[1])
+    scaler = MinMaxScaler()
+    plt.xlabel("hours")
+    plt.ylabel(variable);
+    for day in days:
+        if renormalize:
+            values = scaler.fit_transform(day[variable])
+        else:
+            values = day[variable]
+        plt.plot(day["hours_through_day"], values, linestyle = "-", linewidth = 1)
+
+def weekly_plots(
+    df,
+    variable,
+    renormalize = True
+    ):
+    """
+    Create weekly plots of a variable in a DataFrame, optionally renormalized.
+    It is assumed that the variable `days_through_week` exists.
+    """
+    weeks = []
+    for group in df.groupby(df.index.week):
+        weeks.append(group[1])
+    scaler = MinMaxScaler()
+    plt.ylabel(variable);
+    for week in weeks:
+        if renormalize:
+            values = scaler.fit_transform(week[variable])
+        else:
+            values = week[variable]
+        plt.plot(week["days_through_week"], values, linestyle = "-", linewidth = 1)
+    plt.xticks(
+        [     0.5,       1.5,         2.5,        3.5,      4.5,        5.5,      6.5],
+        ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    )
+
+def yearly_plots(
+    df,
+    variable,
+    renormalize = True
+    ):
+    """
+    Create yearly plots of a variable in a DataFrame, optionally renormalized.
+    It is assumed that the DataFrame index is datetime.
+    """
+    years = []
+    for group in df.groupby(df.index.year):
+        years.append(group[1])
+    scaler = MinMaxScaler()
+    plt.xlabel("days")
+    plt.ylabel(variable);
+    for year in years:
+        if renormalize:
+            values = scaler.fit_transform(year[variable])
+        else:
+            values = year[variable]
+        plt.plot(year["days_through_year"], values, linestyle = "-", linewidth = 1, label = year.index.year.values[0])
+    plt.legend()
+
+def add_rolling_statistics_variables(
+    df           = None,
+    variable     = None,
+    window       = 20,
+    upper_factor = 2,
+    lower_factor = 2
+    ):
+    """
+    Add rolling statistics variables derived from a specified variable in a
+    DataFrame.
+    """
+    df[variable + "_rolling_mean"]               = pd.stats.moments.rolling_mean(df[variable], window)
+    df[variable + "_rolling_standard_deviation"] = pd.stats.moments.rolling_std(df[variable], window)
+    df[variable + "_rolling_upper_bound"]        = df[variable + "_rolling_mean"] + upper_factor * df[variable + "_rolling_standard_deviation"]
+    df[variable + "_rolling_lower_bound"]        = df[variable + "_rolling_mean"] - lower_factor * df[variable + "_rolling_standard_deviation"]
+    return df
+
+def setup_Jupyter():
+    """
+    Set up a Jupyter notebook with a few defaults.
+    """
+    sns.set(context = "paper", font = "monospace")
+    warnings.filterwarnings("ignore")
+    pd.set_option("display.max_rows",    500)
+    pd.set_option("display.max_columns", 500)
+    plt.rcParams["figure.figsize"] = (17, 10)
 
 _main()
