@@ -62,7 +62,7 @@ import seaborn as sns
 import technicolor
 
 name    = "shijian"
-version = "2018-02-23T0411Z"
+version = "2018-02-23T2139Z"
 
 log = logging.getLogger(name)
 log.addHandler(technicolor.ColorisingStreamHandler())
@@ -1592,7 +1592,7 @@ def daily_plots(
     plt.ylabel(variable);
     for day in days:
         if renormalize:
-            values = scaler.fit_transform(day[variable])
+            values = scaler.fit_transform(day[[variable]])
         else:
             values = day[variable]
         plt.plot(day["hours_through_day"], values, linestyle = "-", linewidth = 1)
@@ -1616,7 +1616,7 @@ def weekly_plots(
     plt.ylabel(variable);
     for week in weeks:
         if renormalize:
-            values = scaler.fit_transform(week[variable])
+            values = scaler.fit_transform(week[[variable]])
         else:
             values = week[variable]
         plt.plot(week["days_through_week"], values, linestyle = "-", linewidth = 1)
@@ -1645,7 +1645,7 @@ def yearly_plots(
     plt.ylabel(variable);
     for year in years:
         if renormalize:
-            values = scaler.fit_transform(year[variable])
+            values = scaler.fit_transform(year[[variable]])
         else:
             values = year[variable]
         plt.plot(year["days_through_year"], values, linestyle = "-", linewidth = 1, label = year.index.year.values[0])
@@ -1667,6 +1667,24 @@ def add_rolling_statistics_variables(
     df[variable + "_rolling_upper_bound"]        = df[variable + "_rolling_mean"] + upper_factor * df[variable + "_rolling_standard_deviation"]
     df[variable + "_rolling_lower_bound"]        = df[variable + "_rolling_mean"] - lower_factor * df[variable + "_rolling_standard_deviation"]
     return df
+
+def histogram_day_counts(
+    df,
+    variable
+    ):
+    """
+    Create a week-long histogram of counts of the variable for each day. It is
+    assumed that the DataFrame index is datetime and that the variable
+    `weekday_name` exists.
+    """
+    if not df.index.dtype in ["datetime64[ns]", "<M8[ns]", ">M8[ns]"]:
+        log.error("index is not datetime")
+        return False
+    if not "weekday_name" in df.columns:
+        log.error("field weekday_name not found in DataFrame")
+        return False
+    day_counts = df.groupby(by = "weekday_name")[variable].count()
+    day_counts.plot(kind = "bar", width = 1, rot = 0, alpha = 0.7)
 
 def setup_Jupyter():
     """
