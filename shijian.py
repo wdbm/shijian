@@ -38,6 +38,7 @@ import collections
 import datetime
 import functools
 import inspect
+import logging
 import math
 import os
 import pickle
@@ -58,19 +59,22 @@ import scipy.interpolate
 import scipy.io.wavfile
 from sklearn.preprocessing import MinMaxScaler
 import seaborn as sns
+import technicolor
 
 name    = "shijian"
-version = "2018-01-29T1704Z"
+version = "2018-02-23T0411Z"
+
+log = logging.getLogger(name)
+log.addHandler(technicolor.ColorisingStreamHandler())
+log.setLevel(logging.INFO)
 
 def _main():
-
     global clocks
     clocks = Clocks()
 
 def time_UNIX(
     style = "UNIX time S"
     ):
-
     return style_datetime_object(
         datetime_object = datetime.datetime.utcnow(),
         style           = style
@@ -79,7 +83,6 @@ def time_UNIX(
 def time_UTC(
     style = None
     ):
-
     return style_datetime_object(
         datetime_object = datetime.datetime.utcnow(),
         style           = style
@@ -89,7 +92,6 @@ def filename_time_UNIX(
     style = "UNIX time S.SSSSSS",
     extension = None
     ):
-
     filename = str(
         time_UNIX(
             style = style
@@ -106,7 +108,6 @@ def filename_time_UTC(
     style     = "YYYY-MM-DDTHHMMSSZ",
     extension = None
     ):
-
     filename = style_datetime_object(
         datetime_object = datetime.datetime.utcnow(),
         style           = style
@@ -119,7 +120,6 @@ def filename_time_UTC(
     return filename_proposed
 
 def style_minimal_seconds(seconds):
-
     time_intervals = ["days", "hours", "minutes", "seconds"]
     dateutil_object = dateutil.relativedelta.relativedelta(seconds = seconds)
     return " ".join("{} {}".format(
@@ -130,7 +130,6 @@ def style_UNIX_timestamp(
     timestamp = None,
     style     = "YYYY-MM-DDTHHMMZ"
     ):
-
     return style_datetime_object(
         datetime_object = datetime.datetime.utcfromtimestamp(timestamp),
         style           = style
@@ -241,13 +240,10 @@ def style_datetime_object(
 def HHMM_to_minutes(
     HHMM # string "HHMM"
     ):
-
     hours, minutes = HHMM[:2], HHMM[2:]
-
     return 60 * int(hours) + int(minutes)
 
 def now_in_minutes():
-
     now = datetime.datetime.utcnow()
     return 60 * now.hour + now.minute
 
@@ -256,7 +252,6 @@ def in_daily_time_range(
     time_start = None, # string "HHMM"       e.g. "1700"
     time_stop  = None  # string "HHMM"       e.g. "1000"
     ):
-
     if time_range is None and time_start is None and time_stop is None:
         return None
     if time_range is not None:
@@ -270,7 +265,6 @@ def in_daily_time_range(
            (time_stop - time_start) % minutes_per_day
 
 def timer(function):
-
     @functools.wraps(function)
     def decoration(
         *args,
@@ -281,7 +275,6 @@ def timer(function):
         result    = function(*args, **kwargs)
         clock.stop()
         return result
-
     return decoration
 
 class Clock(object):
@@ -319,7 +312,7 @@ class Clock(object):
 
     # Update the clock accumulator.
     def update(self):
-        if self._update_time:        
+        if self._update_time:
             self.accumulator += (
                 datetime.datetime.utcnow() - self._update_time
             )
@@ -330,7 +323,6 @@ class Clock(object):
         self._update_time = datetime.datetime.utcnow()
 
     def reset(self):
-
         self.accumulator     = datetime.timedelta(0)
         self._start_time_tmp = None
 
@@ -338,49 +330,38 @@ class Clock(object):
     # start time to the accumulator and return the accumulation. If the clock
     # does not have a start time, return the accumulation.
     def elapsed(self):
-
         if self._start_time_tmp:
             self.update()
-
         return self.accumulator
 
     def name(self):
-
         return self._name
 
     def time(self):
-
         return self.elapsed().total_seconds()
 
     def start_time(self):
         if self._start_time:
-
             return style_datetime_object(datetime_object = self._start_time)
         else:
-
             return "none"
 
     def stop_time(self):
         if self._stop_time:
-
             return style_datetime_object(datetime_object = self._stop_time)
         else:
-
             return "none"
 
     def report(self):
-
         string = "clock attribute".ljust(39)     + "value"
         string += "\nname".ljust(40)             + self.name()
         string += "\ntime start (s)".ljust(40)   + self.start_time()
         string += "\ntime stop (s)".ljust(40)    + self.stop_time()
         string += "\ntime elapsed (s)".ljust(40) + str(self.time())
         string += "\n"
-
         return string
 
     def printout(self):
-
         print(self.report())
 
 class Clocks(object):
@@ -388,7 +369,6 @@ class Clocks(object):
     def __init__(
         self
         ):
-
         self._list_of_clocks       = []
         self._default_report_style = "statistics"
 
@@ -396,14 +376,12 @@ class Clocks(object):
         self,
         clock
         ):
-
         self._list_of_clocks.append(clock)
 
     def report(
         self,
         style = None
         ):
-
         if style is None:
             style = self._default_report_style
         if self._list_of_clocks != []:
@@ -440,7 +418,6 @@ class Clocks(object):
         self,
         style = None
         ):
-
         if style is None:
             style = self._default_report_style
         print(self.report(style = style))
@@ -450,7 +427,6 @@ class Progress(object):
     def __init__(
         self
         ):
-
         self.data              = []
         self.quick_calculation = False
         self.update_rate       = 1 # s
@@ -459,13 +435,11 @@ class Progress(object):
     def engage_quick_calculation_mode(
         self
         ):
-
         self.quick_calculation = True
 
     def disengage_quick_calculation_mode(
         self
         ):
-
         self.quick_calculation = False
 
     def add_datum(
@@ -473,7 +447,6 @@ class Progress(object):
         fraction = None,
         style    = None
         ):
-
         if len(self.data) == 0:
             self.data.append((fraction, time_UNIX()))
         elif self.quick_calculation is True:
@@ -490,11 +463,8 @@ class Progress(object):
     def estimated_time_of_completion(
         self
         ):
-
         if len(self.data) <= 1:
-
             return 0
-
         else:
             try:
                 model_values = model_linear(
@@ -508,22 +478,17 @@ class Progress(object):
             except:
                 y = 0
             datetime_object = datetime.datetime.fromtimestamp(int(y))
-
             return datetime_object
 
     # estimated time of arrival
     def ETA(
         self
         ):
-
         if len(self.data) <= 1:
-
             return style_datetime_object(
                 datetime_object = datetime.datetime.now()
             )
-
         else:
-
             return style_datetime_object(
                 datetime_object = self.estimated_time_of_completion()
             )
@@ -532,32 +497,24 @@ class Progress(object):
     def ETR(
         self
         ):
-
         if len(self.data) <= 1:
-
             return 0
-
         else:
             delta_time = \
                 self.estimated_time_of_completion() - datetime.datetime.now()
             if delta_time.total_seconds() >= 0:
-
                 return delta_time.total_seconds()
-
             else:
-
                 return 0
 
     def fraction(
         self
         ):
-
         return self.data[-1][0]
 
     def percentage(
         self
         ):
-
         return 100 * self.fraction()
 
     def status(
@@ -568,7 +525,6 @@ class Progress(object):
             message =\
                 "{percentage:.2f}% complete; " +\
                 "estimated completion time: {ETA} ({ETR:.2f} s)\r"
-
             return message.format(
                 percentage = self.percentage(),
                 ETA        = self.ETA(),
@@ -581,7 +537,6 @@ def UID():
 def unique_number(
     style = None
     ):
-
     # mode: integer 3 significant figures
     if style == "integer 3 significant figures":
         initial_number = 100
@@ -598,9 +553,7 @@ def unique_number(
             style == "integer 3 significant figures" and \
             unique_numbers_3_significant_figures[-1] > 999:
             raise Exception
-
         return unique_numbers_3_significant_figures[-1]
-
     # mode: integer
     else:
         initial_number = 1
@@ -615,7 +568,6 @@ def unique_number(
         return unique_numbers[-1]
 
 def unique_3_digit_number():
-
     return unique_number(style = "integer 3 significant figures")
 
 ## @brief make text filename or URL safe
@@ -625,7 +577,6 @@ def slugify(
     URL        = False,
     return_str = True
     ):
-
     if not sys.version_info >= (3, 0):
         text = unicode(text, "utf-8")
     text = unicodedata.normalize("NFKD", text)
@@ -640,7 +591,6 @@ def slugify(
         text = re.sub("[-\s]+", "-", text)
     if return_str:
         text = str(text)
-
     return text
 
 ## @brief propose a filename
@@ -659,7 +609,6 @@ def propose_filename(
     slugify_filename               = True,
     exclude_extension_from_slugify = True
     ):
-
     # If no file name is specified, generate one.
     if not filename:
         filename = time_UTC()
@@ -698,7 +647,6 @@ def ensure_platform_release(
     require    = True,
     warn       = False
     ):
-
     import platform
     release = platform.release()
     if keyphrase not in release:
@@ -708,33 +656,31 @@ def ensure_platform_release(
                 keyphrase = keyphrase,
                 release   = release
             )
-        #if warn is True:
-            #log.warn(message)
+        if warn is True:
+            log.warning(message)
         if require is True:
-            #log.fatal(message)
+            log.fatal(message)
             raise(EnvironmentError)
 
 def ensure_program_available(
     program
     ):
-
-    #log.debug("ensure program {program} available".format(
-    #    program = program
-    #))
+    log.debug("ensure program {program} available".format(
+        program = program
+    ))
     if which(program) is None:
-        #log.error("program {program} not available".format(
-        #    program = program
-        #))
+        log.error("program {program} not available".format(
+            program = program
+        ))
         raise(EnvironmentError)
-    #else:
-        #log.debug("program {program} available".format(
-        #    program = program
-        #))
+    else:
+        log.debug("program {program} available".format(
+            program = program
+        ))
 
 def which(
     program
     ):
-
     def is_exe(fpath):
         return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
     fpath, fname = os.path.split(program)
@@ -753,7 +699,6 @@ def which(
 def running(
     program
     ):
-
     program = str.encode(program)
     results = subprocess.Popen(
         ["ps", "-A"],
@@ -770,19 +715,18 @@ def running(
 def ensure_file_existence(
     filename
     ):
-
-    #log.debug("ensure existence of file {filename}".format(
-    #    filename = filename
-    #))
+    log.debug("ensure existence of file {filename}".format(
+        filename = filename
+    ))
     if not os.path.isfile(os.path.expandvars(filename)):
-        #log.fatal("file {filename} does not exist".format(
-        #    filename = filename
-        #))
+        log.error("file {filename} does not exist".format(
+            filename = filename
+        ))
         raise(IOError)
-    #else:
-        #log.debug("file {filename} found".format(
-        #    filename = filename
-        #))
+    else:
+        log.debug("file {filename} found".format(
+            filename = filename
+        ))
 
 def rm_file(filename):
     os.remove(filename)
@@ -818,7 +762,6 @@ def find_file_sequences(
 def ls_files(
     directory = "."
     ):
-
     return([filename for filename in os.listdir(directory) if os.path.isfile(
         os.path.join(directory, filename)
     )])
@@ -828,7 +771,6 @@ def ls_files(
 def directory_listing(
     directory = ".",
     ):
-
     files_list = []
     for root, directories, filenames in os.walk(directory):
         for filename in filenames:
@@ -841,9 +783,8 @@ def filepaths_at_directory(
     directory          = None,
     extension_required = None
     ):
-
     if not os.path.isdir(directory):
-        print("error -- directory {directory} not found".format(directory = directory))
+        log.error("error -- directory {directory} not found".format(directory = directory))
         raise(IOError)
     filepaths = [os.path.abspath(os.path.join(directory, filename)) for filename in os.listdir(directory) if os.path.isfile(os.path.join(directory, filename))]
     if extension_required:
@@ -853,7 +794,6 @@ def filepaths_at_directory(
 def engage_command(
     command = None
     ):
-
     process = subprocess.Popen(
         [command],
         shell      = True,
@@ -865,7 +805,6 @@ def engage_command(
     return output
 
 def percentage_power():
-
     filenames_power = engage_command(
         command = "upower -e"
     )
@@ -915,7 +854,6 @@ def convert_type_list_elements(
         ) for element in list_object]
 
 class List_Consensus(list):
-
     """
     This class is designed to instantiate a list of elements. It features
     functionality that limits approximately the memory usage of the list. On
@@ -924,12 +862,10 @@ class List_Consensus(list):
     provides functionality to return its most frequent element, which can be
     used to determine its "consensus" element.
     """
-
     def __init__(
         self,
         *args
         ):
-
         # list initialisation
         if sys.version_info >= (3, 0):
             super().__init__(*args)
@@ -941,7 +877,6 @@ class List_Consensus(list):
         self,
         size = None
         ):
-
         if size is not None:
             self.size_constraint = size
 
@@ -949,12 +884,10 @@ class List_Consensus(list):
         self,
         size = None
         ):
-
         """
         This function removes the least frequent elements until the size
         constraint is met.
         """
-
         if size is None:
             size = self.size_constraint
         while sys.getsizeof(self) > size:
@@ -968,7 +901,6 @@ class List_Consensus(list):
         ensure_size = True,
         size        = None
         ):
-
         if size is None:
             size = self.size_constraint
         list.append(self, element)
@@ -980,7 +912,6 @@ class List_Consensus(list):
     def consensus(
         self
         ):
-
         try:
             element_frequencies = collections.Counter(self)
             return element_frequencies.most_common(1)[0][0]
@@ -992,7 +923,6 @@ class List_Consensus(list):
 def natural_sort(
     list_object
     ):
-
     convert = lambda text: int(text) if text.isdigit() else text.lower()
     alphanumeric_key = lambda key: [
         convert(text) for text in re.split("([0-9]+)", key)
@@ -1002,7 +932,6 @@ def natural_sort(
 def indices_of_list_element_duplicates(
     x
     ):
-
     seen = set()
     for index, element in enumerate(x):
         if isinstance(element, list):
@@ -1033,12 +962,10 @@ def select_spread(
     list_of_elements   = None,
     number_of_elements = None
     ):
-
     """
     This function returns the specified number of elements of a list spread
     approximately evenly.
     """
-
     if len(list_of_elements) <= number_of_elements:
         return list_of_elements
     if number_of_elements == 0:
@@ -1055,14 +982,12 @@ def split_list(
     list_object = None,
     granularity = None
     ):
-
     """
     This function splits a list into a specified number of lists. It returns a
     list of lists that correspond to these parts. Negative numbers of parts are
     not accepted and numbers of parts greater than the number of elements in the
     list result in the maximum possible number of lists being returned.
     """
-
     if granularity < 0:
         raise Exception("negative granularity")
     mean_length = len(list_object) / float(granularity)
@@ -1082,7 +1007,6 @@ def ranges_edge_pairs(
     extent       = None,
     range_length = None
     ):
-
     """
     Return the edges of ranges within an extent of some length. For example, to
     separate 76 variables into groups of at most 20 variables, the ranges of the
@@ -1095,20 +1019,18 @@ def ranges_edge_pairs(
     ... )
     [(0, 20), (21, 41), (42, 62), (63, 76)]
     """
-
     number_of_ranges = int(math.ceil(extent / range_length))
     return [
-               (
-                   index * range_length + index,
-                   min((index + 1) * range_length + index, extent)
-               )
-               for index in range(0, number_of_ranges)
-           ]
+        (
+            index * range_length + index,
+            min((index + 1) * range_length + index, extent)
+        )
+        for index in range(0, number_of_ranges)
+    ]
 
 def Markdown_list_to_dictionary(
     Markdown_list = None
     ):
-
     line = re.compile(r"( *)- ([^:\n]+)(?:: ([^\n]*))?\n?")
     depth = 0
     stack = [{}]
@@ -1128,7 +1050,6 @@ def Markdown_list_to_dictionary(
 def Markdown_list_to_OrderedDict(
     Markdown_list = None
     ):
-
     line = re.compile(r"( *)- ([^:\n]+)(?:: ([^\n]*))?\n?")
     depth = 0
     stack = [collections.OrderedDict()]
@@ -1148,7 +1069,6 @@ def Markdown_list_to_OrderedDict(
 def open_configuration(
     filename = None
     ):
-
     file_configuration = open(filename, "r").read()
     return Markdown_list_to_OrderedDict(file_configuration)
 
@@ -1158,7 +1078,6 @@ def change_list_resolution(
     interpolation_type = "linear",
     dimensions         = 1
     ):
-
     y1 = values
     x1 = list(range(0, len(values)))
     interpolation = scipy.interpolate.interp1d(
@@ -1177,10 +1096,9 @@ def change_waveform_to_rectangle_waveform(
     values             = None,
     fraction_amplitude = 0.01
     ):
-
     values[values >= 0] = fraction_amplitude * max(values)
     values[values <  0] = fraction_amplitude * min(values)
-    values[:] = [x * (1 / fraction_amplitude) for x in values] 
+    values[:] = [x * (1 / fraction_amplitude) for x in values]
     return values
 
 def change_sound_file_waveform_to_sound_file_rectangle_waveform(
@@ -1189,7 +1107,6 @@ def change_sound_file_waveform_to_sound_file_rectangle_waveform(
     overwrite                   = False,
     fraction_amplitude          = 0.01
     ):
-
     if filename_rectangle_waveform is None:
         filename_rectangle_waveform = filename_waveform
     filename_rectangle_waveform = propose_filename(
@@ -1203,14 +1120,13 @@ def change_sound_file_waveform_to_sound_file_rectangle_waveform(
     )
     values[values >= 0] = fraction_amplitude * max(values)
     values[values <  0] = fraction_amplitude * min(values)
-    values[:] = [x * (1 / fraction_amplitude) for x in values] 
+    values[:] = [x * (1 / fraction_amplitude) for x in values]
     scipy.io.wavfile.write(filename_rectangle_waveform, rate, values)
 
 def normalize(
     x,
     summation = None
     ):
-
     if summation is None:
         summation = sum(x) # normalize to unity
     return [element/summation for element in x]
@@ -1220,7 +1136,6 @@ def rescale(
     minimum = 0,
     maximum = 1
     ):
-
     return [
         minimum + (element - min(x)) * ((maximum - minimum)\
         / (max(x) - min(x))) for element in x
@@ -1229,7 +1144,6 @@ def rescale(
 def composite_variable(
     x
     ):
-
     k = len(x) + 1
     variable = 0
     for index, element in enumerate(x):
@@ -1240,7 +1154,6 @@ def model_linear(
     data              = None,
     quick_calculation = False
     ):
-
     if quick_calculation is True:
         data = select_spread(data, 10)
     n = len(data)
@@ -1263,7 +1176,6 @@ def model_linear(
 def import_object(
     filename  = None
     ):
-
     return pickle.load(open(filename, "rb"))
 
 def export_object(
@@ -1271,7 +1183,6 @@ def export_object(
     filename  = None,
     overwrite = False
     ):
-
     filename = propose_filename(
         filename  = filename,
         overwrite = overwrite
@@ -1279,16 +1190,13 @@ def export_object(
     pickle.dump(x, open(filename, "wb"))
 
 def string_to_bool(x):
-
     return x.lower() in ("yes", "true", "t", "1")
 
 def ustr(text):
-
     """
     Convert a string to Python 2 unicode or Python 3 string as appropriate to
     the version of Python in use.
     """
-
     if text is not None:
         if sys.version_info >= (3, 0):
             return str(text)
@@ -1301,7 +1209,6 @@ def ustr(text):
 def number_to_English_text(
     number = None
     ):
-
     ones =      [
                  "",
                  "one ",
@@ -1357,12 +1264,11 @@ def number_to_English_text(
                  "quattuordecillion ",
                  "quindecillion",
                  "sexdecillion ",
-                 "septendecillion ", 
+                 "septendecillion ",
                  "octodecillion ",
                  "novemdecillion ",
                  "vigintillion "
                 ]
-
     # Split the number into 3-digit groups with each group representing
     # hundreds, thousands etc.
     number_in_groups_of_3 = []
@@ -1404,7 +1310,6 @@ def number_to_English_text(
 def replace_numbers_in_text_with_English_text(
     text = None
     ):
-
     # Split the text into text and numbers.
     text = re.split("(\d+)", text)
     if text[-1] == "":
@@ -1416,28 +1321,21 @@ def replace_numbers_in_text_with_English_text(
             text_translated.append(number_to_English_text(number = text_segment))
         else:
             text_translated.append(text_segment)
-
     return "".join(text_translated)
 
 def replace_contractions_with_full_words_and_replace_numbers_with_digits(
     text            = None,
     remove_articles = True
     ):
-
     """
     This function replaces contractions with full words and replaces numbers
     with digits in specified text. There is the option to remove articles.
     """
-
     words = text.split()
-
     text_translated = ""
-
     for word in words:
-
         if remove_articles and word in ["a", "an", "the"]:
             continue
-
         contractions_expansions = {
             "ain't":       "is not",
             "aren't":      "are not",
@@ -1533,10 +1431,8 @@ def replace_contractions_with_full_words_and_replace_numbers_with_digits(
             "you're":      "you are",
             "you've":      "you have"
         }
-
         if word in list(contractions_expansions.keys()):
             word = contractions_expansions[word]
-
         numbers_digits = {
             "zero":       "0",
             "one":        "1",
@@ -1560,26 +1456,21 @@ def replace_contractions_with_full_words_and_replace_numbers_with_digits(
             "nineteen":  "19",
             "twenty":    "20"
         }
-
         if word in list(numbers_digits.keys()):
             word = numbers_digits[word]
-
         text_translated += " " + word
         text_translated = text_translated.strip()
-
     return text_translated
 
 def split_into_sentences(
     text = None
     ):
-
     capitals = "([A-Z])"
     prefixes = "(Dr|dr|Hon|hon|Mr|mr|Mrs|mrs|Ms|ms|St|st)[.]"
     suffixes = "(Co|co|Inc|inc|Jr|jr|Ltd|ltd|Sr|sr)"
     starters = "(But\s|Dr|He\s|However\s|It\s|Mr|Mrs|Ms|Our\s|She\s|That\s|Their\s|They\s|This\s|We\s|Wherever)"
     acronyms = "([A-Z][.][A-Z][.](?:[A-Z][.])?)"
     websites = "[.](com|gov|io|net|org|pro)"
-
     text = " " + text + "  "
     text = text.replace("\n", " ")
     text = re.sub(prefixes, "\\1<prd>", text)
@@ -1609,11 +1500,9 @@ def split_into_sentences(
 def trim_incomplete_sentences(
     text = None
     ):
-
     return " ".join(split_into_sentences(text)[1:])
 
 def pseudorandom_MAC_address():
-
     return "{aa:02x}:{bb:02x}:{cc:02x}:{dd:02x}:{ee:02x}:{ff:02x}".format(
         aa = random.randint(0, 255),
         bb = random.randint(0, 255),
@@ -1643,7 +1532,6 @@ def get_attribute(
 def generate_Python_variable_names(
     number = 10
     ):
-
     names = []
     while len(names) < number:
         name = str(uuid.uuid4()).replace("-", "")
@@ -1658,6 +1546,9 @@ def add_time_variables(df, reindex = True):
     added, optionally with the index set to datetime and the variable `datetime`
     removed. It is assumed that the variable `datetime` exists.
     """
+    if not "datetime" in df.columns:
+        log.error("field datetime not found in DataFrame")
+        return False
     df["datetime"]             = pd.to_datetime(df["datetime"])
     df["weekday"]              = df["datetime"].dt.weekday
     df["weekday_name"]         = df["datetime"].dt.weekday_name
@@ -1690,6 +1581,9 @@ def daily_plots(
     Create daily plots of a variable in a DataFrame, optionally renormalized. It
     is assumed that the DataFrame index is datetime.
     """
+    if not df.index.dtype in ["datetime64[ns]", "<M8[ns]", ">M8[ns]"]:
+        log.error("index is not datetime")
+        return False
     days = []
     for group in df.groupby(df.index.day):
         days.append(group[1])
@@ -1712,6 +1606,9 @@ def weekly_plots(
     Create weekly plots of a variable in a DataFrame, optionally renormalized.
     It is assumed that the variable `days_through_week` exists.
     """
+    if not "days_through_week" in df.columns:
+        log.error("field days_through_week not found in DataFrame")
+        return False
     weeks = []
     for group in df.groupby(df.index.week):
         weeks.append(group[1])
@@ -1737,6 +1634,9 @@ def yearly_plots(
     Create yearly plots of a variable in a DataFrame, optionally renormalized.
     It is assumed that the DataFrame index is datetime.
     """
+    if not df.index.dtype in ["datetime64[ns]", "<M8[ns]", ">M8[ns]"]:
+        log.error("index is not datetime")
+        return False
     years = []
     for group in df.groupby(df.index.year):
         years.append(group[1])

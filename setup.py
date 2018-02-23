@@ -9,7 +9,7 @@ def main():
 
     setuptools.setup(
         name             = "shijian",
-        version          = "2018.01.29.1704",
+        version          = "2018.02.23.0411",
         description      = "change, time, file, list, statistics, language and other utilities",
         long_description = long_description(),
         url              = "https://github.com/wdbm/shijian",
@@ -27,7 +27,8 @@ def main():
                            "pyprel",
                            "scipy",
                            "seaborn",
-                           "sklearn"
+                           "sklearn",
+                           "technicolor"
                            ],
         entry_points     = """
                            [console_scripts]
