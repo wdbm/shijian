@@ -62,7 +62,7 @@ import seaborn as sns
 import technicolor
 
 name    = "shijian"
-version = "2018-02-23T2139Z"
+version = "2018-02-24T0237Z"
 
 log = logging.getLogger(name)
 log.addHandler(technicolor.ColorisingStreamHandler())
@@ -1550,6 +1550,8 @@ def add_time_variables(df, reindex = True):
         log.error("field datetime not found in DataFrame")
         return False
     df["datetime"]             = pd.to_datetime(df["datetime"])
+    df["month"]                = df["datetime"].dt.month
+    df["month_name"]           = df["datetime"].dt.strftime("%B")
     df["weekday"]              = df["datetime"].dt.weekday
     df["weekday_name"]         = df["datetime"].dt.weekday_name
     df["time_through_day"]     = df["datetime"].map(
@@ -1569,7 +1571,7 @@ def add_time_variables(df, reindex = True):
                                  )
     df["days_through_year"]    = df["datetime"].dt.dayofyear
     df.index                   = df["datetime"]
-    del df["datetime"]
+    #del df["datetime"]
     return df
 
 def daily_plots(
@@ -1628,7 +1630,9 @@ def weekly_plots(
 def yearly_plots(
     df,
     variable,
-    renormalize = True
+    renormalize                   = True,
+    horizontal_axis_labels_days   = False,
+    horizontal_axis_labels_months = True
     ):
     """
     Create yearly plots of a variable in a DataFrame, optionally renormalized.
@@ -1649,6 +1653,11 @@ def yearly_plots(
         else:
             values = year[variable]
         plt.plot(year["days_through_year"], values, linestyle = "-", linewidth = 1, label = year.index.year.values[0])
+    if horizontal_axis_labels_months:
+        plt.xticks(
+            [     15.5,         45,    74.5,     105, 135.5,    166,  196.5,    227.5,         258,     288.5,        319,      349.5],
+            ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+        )
     plt.legend()
 
 def add_rolling_statistics_variables(
@@ -1668,6 +1677,42 @@ def add_rolling_statistics_variables(
     df[variable + "_rolling_lower_bound"]        = df[variable + "_rolling_mean"] - lower_factor * df[variable + "_rolling_standard_deviation"]
     return df
 
+def rescale_variables(
+    df,
+    variables_include = [],
+    variables_exclude = []
+    ):
+    """
+    Rescale variables in a DataFrame, excluding variables with NaNs and strings,
+    excluding specified variables, and including specified variables.
+    """
+    variables_not_rescale = variables_exclude
+    variables_not_rescale.extend(df.columns[df.isna().any()].tolist())                                    # variables with NaNs
+    variables_not_rescale.extend(df.select_dtypes(include = ["object", "datetime", "timedelta"]).columns) # variables with strings
+    variables_rescale = list(set(df.columns) - set(variables_not_rescale))
+    variables_rescale.extend(variables_include)
+    scaler = MinMaxScaler()
+    df[variables_rescale] = scaler.fit_transform(df[variables_rescale])
+    return df
+
+def histogram_hour_counts(
+    df,
+    variable
+    ):
+    """
+    Create a day-long histogram of counts of the variable for each hour. It is
+    assumed that the DataFrame index is datetime and that the variable
+    `hour` exists.
+    """
+    if not df.index.dtype in ["datetime64[ns]", "<M8[ns]", ">M8[ns]"]:
+        log.error("index is not datetime")
+        return False
+    if not "hour" in df.columns:
+        log.error("field hour not found in DataFrame")
+        return False
+    counts = df.groupby(by = "hour")[variable].count()
+    counts.plot(kind = "bar", width = 1, rot = 0, alpha = 0.7)
+
 def histogram_day_counts(
     df,
     variable
@@ -1683,8 +1728,26 @@ def histogram_day_counts(
     if not "weekday_name" in df.columns:
         log.error("field weekday_name not found in DataFrame")
         return False
-    day_counts = df.groupby(by = "weekday_name")[variable].count()
-    day_counts.plot(kind = "bar", width = 1, rot = 0, alpha = 0.7)
+    counts = df.groupby(by = "weekday_name")[variable].count()
+    counts.plot(kind = "bar", width = 1, rot = 0, alpha = 0.7)
+
+def histogram_month_counts(
+    df,
+    variable
+    ):
+    """
+    Create a year-long histogram of counts of the variable for each month. It is
+    assumed that the DataFrame index is datetime and that the variable
+    `month_name` exists.
+    """
+    if not df.index.dtype in ["datetime64[ns]", "<M8[ns]", ">M8[ns]"]:
+        log.error("index is not datetime")
+        return False
+    if not "month_name" in df.columns:
+        log.error("field month_name not found in DataFrame")
+        return False
+    counts = df.groupby(by = "month_name")[variable].count()
+    counts.plot(kind = "bar", width = 1, rot = 0, alpha = 0.7)
 
 def setup_Jupyter():
     """
