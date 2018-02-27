@@ -44,12 +44,15 @@ import os
 import pickle
 import random
 import re
-import subprocess
 import sys
 import time
 import unicodedata
 import uuid
 import warnings
+if sys.version_info[0] < 3:
+    import subprocess32 as subprocess
+else:
+    import subprocess
 
 import dateutil.relativedelta
 import matplotlib.pyplot as plt
@@ -62,7 +65,7 @@ import seaborn as sns
 import technicolor
 
 name    = "shijian"
-version = "2018-02-24T0237Z"
+version = "2018-02-27T1536Z"
 
 log = logging.getLogger(name)
 log.addHandler(technicolor.ColorisingStreamHandler())
@@ -792,17 +795,36 @@ def filepaths_at_directory(
     return filepaths
 
 def engage_command(
-    command = None
+    command    = None,
+    background = True,
+    timeout    = None
     ):
-    process = subprocess.Popen(
-        [command],
-        shell      = True,
-        executable = "/bin/bash",
-        stdout = subprocess.PIPE
-    )
-    process.wait()
-    output, errors = process.communicate()
-    return output
+    log.debug(command)
+    if background:
+        if timeout:
+            log.warning("warning -- command set to run in background; ignoring timeout")
+        subprocess.Popen(
+            [command],
+            shell      = True,
+            executable = "/bin/bash"
+        )
+        return None
+    elif not background:
+        process = subprocess.Popen(
+            [command],
+            shell      = True,
+            executable = "/bin/bash",
+            stdout     = subprocess.PIPE
+        )
+        try:
+            process.wait(timeout = timeout)
+            output, errors = process.communicate(timeout = timeout)
+            return output
+        except:
+            process.kill()
+            return False
+    else:
+        return None
 
 def percentage_power():
     filenames_power = engage_command(
