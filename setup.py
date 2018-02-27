@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 
 import setuptools
 
@@ -9,7 +10,7 @@ def main():
 
     setuptools.setup(
         name             = "shijian",
-        version          = "2018.02.27.1536",
+        version          = "2018.02.27.1624",
         description      = "change, time, file, list, statistics, language and other utilities",
         long_description = long_description(),
         url              = "https://github.com/wdbm/shijian",
@@ -28,7 +29,7 @@ def main():
                            "scipy",
                            "seaborn",
                            "sklearn",
-                           "subprocess32",
+                           "subprocess32;python_version<'3.0'",
                            "technicolor"
                            ],
         entry_points     = """
