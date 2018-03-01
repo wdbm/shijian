@@ -45,6 +45,7 @@ import pickle
 import random
 import re
 import sys
+import tempfile
 import time
 import unicodedata
 import uuid
@@ -65,7 +66,7 @@ import seaborn as sns
 import technicolor
 
 name    = "shijian"
-version = "2018-02-27T1624Z"
+version = "2018-03-01T2046Z"
 
 log = logging.getLogger(name)
 log.addHandler(technicolor.ColorisingStreamHandler())
@@ -644,6 +645,13 @@ def propose_filename(
                                     str(count)         + \
                                     filename_extension
     return filename_proposed
+
+def tmp_filepath():
+    """
+    Return an extensionless filepath at the directory /tmp without creating a
+    file at the filepath.
+    """
+    return "/tmp/" + next(tempfile._get_candidate_names())
 
 def ensure_platform_release(
     keyphrase  = "el7",
