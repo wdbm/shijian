@@ -66,7 +66,7 @@ import seaborn as sns
 import technicolor
 
 name    = "shijian"
-version = "2018-03-01T2046Z"
+version = "2018-03-13T1724Z"
 
 log = logging.getLogger(name)
 log.addHandler(technicolor.ColorisingStreamHandler())
@@ -1607,7 +1607,12 @@ def add_time_variables(df, reindex = True):
 def daily_plots(
     df,
     variable,
-    renormalize = True
+    renormalize = True,
+    plot        = True,
+    scatter     = False,
+    linestyle   = "-",
+    linewidth   = 1,
+    s           = 1
     ):
     """
     Create daily plots of a variable in a DataFrame, optionally renormalized. It
@@ -1627,12 +1632,20 @@ def daily_plots(
             values = scaler.fit_transform(day[[variable]])
         else:
             values = day[variable]
-        plt.plot(day["hours_through_day"], values, linestyle = "-", linewidth = 1)
+        if plot:
+            plt.plot(day["hours_through_day"], values, linestyle = linestyle, linewidth = linewidth)
+        if scatter:
+            plt.scatter(day["hours_through_day"], values, s = s)
 
 def weekly_plots(
     df,
     variable,
-    renormalize = True
+    renormalize = True,
+    plot        = True,
+    scatter     = False,
+    linestyle   = "-",
+    linewidth   = 1,
+    s           = 1
     ):
     """
     Create weekly plots of a variable in a DataFrame, optionally renormalized.
@@ -1651,7 +1664,10 @@ def weekly_plots(
             values = scaler.fit_transform(week[[variable]])
         else:
             values = week[variable]
-        plt.plot(week["days_through_week"], values, linestyle = "-", linewidth = 1)
+        if plot:
+            plt.plot(week["days_through_week"], values, linestyle = linestyle, linewidth = linewidth)
+        if scatter:
+            plt.scatter(week["days_through_week"], values, s = s)
     plt.xticks(
         [     0.5,       1.5,         2.5,        3.5,      4.5,        5.5,      6.5],
         ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
@@ -1662,7 +1678,12 @@ def yearly_plots(
     variable,
     renormalize                   = True,
     horizontal_axis_labels_days   = False,
-    horizontal_axis_labels_months = True
+    horizontal_axis_labels_months = True,
+    plot                          = True,
+    scatter                       = False,
+    linestyle                     = "-",
+    linewidth                     = 1,
+    s                             = 1
     ):
     """
     Create yearly plots of a variable in a DataFrame, optionally renormalized.
@@ -1682,7 +1703,10 @@ def yearly_plots(
             values = scaler.fit_transform(year[[variable]])
         else:
             values = year[variable]
-        plt.plot(year["days_through_year"], values, linestyle = "-", linewidth = 1, label = year.index.year.values[0])
+        if plot:
+            plt.plot(year["days_through_year"], values, linestyle = linestyle, linewidth = linewidth, label = year.index.year.values[0])
+        if scatter:
+            plt.scatter(year["days_through_year"], values, s = s)
     if horizontal_axis_labels_months:
         plt.xticks(
             [     15.5,         45,    74.5,     105, 135.5,    166,  196.5,    227.5,         258,     288.5,        319,      349.5],
