@@ -66,7 +66,7 @@ import seaborn as sns
 import technicolor
 
 name    = "shijian"
-version = "2018-03-13T1724Z"
+version = "2018-03-17T1957Z"
 
 log = logging.getLogger(name)
 log.addHandler(technicolor.ColorisingStreamHandler())
@@ -835,39 +835,23 @@ def engage_command(
         return None
 
 def percentage_power():
-    filenames_power = engage_command(
-        command = "upower -e"
-    )
-    filenames_power = [
-        line for line in filenames_power.split("\n") if line
-    ]
-
-    filenames_power_battery = [
-        filename for filename in filenames_power if "battery" in filename
-    ]
-    filename_power_battery =\
-        filenames_power_battery[0] if filenames_power_battery else None
-
-    filenames_power_line = [
-        filename for filename in filenames_power if "line" in filename
-    ]
-    filename_power_line =\
-        filenames_power_line[0] if filenames_power_line else None
-
-    if filename_power_battery:
-        power_data = engage_command(
-            command = "upower -i {filename}".format(
-                filename = filename_power_battery
-            )
-        )
-        percentage_power = [
-            line for line in power_data.split("\n") if "percentage" in line
-        ][0].split()[1]
-    elif filename_power_line:
-        percentage_power = "100%"
-    else:
-        percentage_power = None
-    return percentage_power
+    try:
+        filenames_power         = engage_command(command = "upower -e")
+        filenames_power         = [line for line in filenames_power.split("\n") if line]
+        filenames_power_battery = [filename for filename in filenames_power if "battery" in filename]
+        filename_power_battery  = filenames_power_battery[0] if filenames_power_battery else None
+        filenames_power_line    = [filename for filename in filenames_power if "line" in filename]
+        filename_power_line     = filenames_power_line[0] if filenames_power_line else None
+        if filename_power_battery:
+            power_data       = engage_command(command = "upower -i {filename}".format(filename = filename_power_battery))
+            percentage_power = [line for line in power_data.split("\n") if "percentage" in line][0].split()[1]
+        elif filename_power_line:
+            percentage_power = "100%"
+        else:
+            percentage_power = None
+        return percentage_power
+    except:
+        return None
 
 def convert_type_list_elements(
     list_object  = None,
