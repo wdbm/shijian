@@ -66,7 +66,7 @@ import seaborn as sns
 import technicolor
 
 name    = "shijian"
-version = "2018-03-17T1957Z"
+version = "2018-04-09T2052Z"
 
 log = logging.getLogger(name)
 log.addHandler(technicolor.ColorisingStreamHandler())
@@ -652,6 +652,27 @@ def tmp_filepath():
     file at the filepath.
     """
     return "/tmp/" + next(tempfile._get_candidate_names())
+
+def tail(
+    filepath = "log.txt",
+    lines    = 50
+    ):
+    """
+    Return a specified number of last lines of a specified file. If there is an
+    error or the file does not exist, return False.
+    """
+    try:
+        filepath = os.path.expanduser(os.path.expandvars(filepath))
+        if os.path.isfile(filepath):
+            text = subprocess.check_output(["tail", "-" + str(lines), filepath])
+            if text:
+                return text
+            else:
+                return False
+        else:
+            return False
+    except:
+        return False
 
 def ensure_platform_release(
     keyphrase  = "el7",
