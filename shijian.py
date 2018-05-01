@@ -34,6 +34,7 @@
 """
 
 from __future__ import division
+import calendar
 import collections
 import datetime
 import functools
@@ -66,7 +67,7 @@ import seaborn as sns
 import technicolor
 
 name    = "shijian"
-version = "2018-04-09T2052Z"
+version = "2018-05-01T1254Z"
 
 log = logging.getLogger(name)
 log.addHandler(technicolor.ColorisingStreamHandler())
@@ -1766,10 +1767,7 @@ def histogram_hour_counts(
     if not df.index.dtype in ["datetime64[ns]", "<M8[ns]", ">M8[ns]"]:
         log.error("index is not datetime")
         return False
-    if not "hour" in df.columns:
-        log.error("field hour not found in DataFrame")
-        return False
-    counts = df.groupby(by = "hour")[variable].count()
+    counts = df.groupby(df.index.hour)[variable].count()
     counts.plot(kind = "bar", width = 1, rot = 0, alpha = 0.7)
 
 def histogram_day_counts(
@@ -1784,10 +1782,7 @@ def histogram_day_counts(
     if not df.index.dtype in ["datetime64[ns]", "<M8[ns]", ">M8[ns]"]:
         log.error("index is not datetime")
         return False
-    if not "weekday_name" in df.columns:
-        log.error("field weekday_name not found in DataFrame")
-        return False
-    counts = df.groupby(by = "weekday_name")[variable].count()
+    counts = df.groupby(df.index.weekday_name)[variable].count().reindex(calendar.day_name[0:])
     counts.plot(kind = "bar", width = 1, rot = 0, alpha = 0.7)
 
 def histogram_month_counts(
@@ -1802,10 +1797,7 @@ def histogram_month_counts(
     if not df.index.dtype in ["datetime64[ns]", "<M8[ns]", ">M8[ns]"]:
         log.error("index is not datetime")
         return False
-    if not "month_name" in df.columns:
-        log.error("field month_name not found in DataFrame")
-        return False
-    counts = df.groupby(by = "month_name")[variable].count()
+    counts = df.groupby(df.index.strftime("%B"))[variable].count().reindex(calendar.month_name[1:])
     counts.plot(kind = "bar", width = 1, rot = 0, alpha = 0.7)
 
 def setup_Jupyter():
