@@ -9,7 +9,7 @@ def main():
 
     setuptools.setup(
         name             = "shijian",
-        version          = "2018.05.01.1254",
+        version          = "2018.06.02.1644",
         description      = "change, time, file, list, statistics, language and other utilities",
         long_description = long_description(),
         url              = "https://github.com/wdbm/shijian",
@@ -20,6 +20,7 @@ def main():
                            "shijian"
                            ],
         install_requires = [
+                           "ipywidgets",
                            "pandas",
                            "python-dateutil",
                            "matplotlib",
