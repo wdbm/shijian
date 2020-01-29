@@ -34,11 +34,7 @@
 
 import shijian
 
-name    = "shijian_examples_slugify"
-version = "2018-02-23T0411Z"
-
 def main():
-
     for text in [
         "This is some text.",
         "This is an awkward ******* filename."
@@ -47,7 +43,6 @@ def main():
         print(text)
         print("slugified text for filename:")
         print(shijian.slugify(text))
-
     for text in [
         "This is some text.",
         "This_is_an awkward ******* URL."

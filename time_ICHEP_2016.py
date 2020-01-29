@@ -31,9 +31,6 @@
 #                                                                              #
 ################################################################################
 
-name    = "time_ICHEP_2016"
-version = "2016-05-13T0503Z"
-
 import datetime
 import os
 import time
@@ -42,11 +39,8 @@ import pyprel
 import shijian
 
 def main():
-
     os.system("tput reset")
-
     while True:
-
         year_ICHEP_2016  = 2016
         month_ICHEP_2016 = 8
         day_ICHEP_2016   = 3
@@ -63,11 +57,9 @@ def main():
             datetime_object = datetime_object_current_time_UTC_to_ICHEP_2016_time,
             style = "{DD}:{HH}:{MM}:{SS}"
         )
-
         print("time to ICHEP 2016:")
         print(pyprel.render_segment_display(text = current_time_to_ICHEP_2016_time))
         print(" D  D     H  H     M  M     S  S")
-
         time.sleep(1)
         os.system("tput reset")
 

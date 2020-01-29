@@ -2,55 +2,47 @@
 # -*- coding: utf-8 -*-
 
 import os
-
 import setuptools
 
 def main():
-
     setuptools.setup(
-        name             = "shijian",
-        version          = "2018.06.02.1644",
-        description      = "change, time, file, list, statistics, language and other utilities",
+        name             = 'shijian',
+        version          = '2020.01.29.1850Z',
+        description      = 'change, time, file, list, statistics, language and other utilities',
         long_description = long_description(),
-        url              = "https://github.com/wdbm/shijian",
-        author           = "Will Breaden Madden",
-        author_email     = "wbm@protonmail.ch",
-        license          = "GPLv3",
+        url              = 'https://github.com/wdbm/shijian',
+        author           = 'Will Breaden Madden',
+        author_email     = 'wbm@protonmail.ch',
+        license          = 'GPLv3',
         py_modules       = [
-                           "shijian"
+                           'shijian'
                            ],
         install_requires = [
-                           "ipywidgets",
-                           "pandas",
-                           "python-dateutil",
-                           "matplotlib",
-                           "numpy",
-                           "pyprel",
-                           "scipy",
-                           "seaborn",
-                           "sklearn",
-                           "subprocess32;python_version<'3.0'",
-                           "technicolor"
+                           'ipywidgets',
+                           'pandas',
+                           'python-dateutil',
+                           'matplotlib',
+                           'numpy',
+                           'pyprel',
+                           'scipy',
+                           'seaborn',
+                           'sklearn',
+                           'subprocess32;python_version<\'3.0\'',
+                           'technicolor'
                            ],
-        entry_points     = """
-                           [console_scripts]
-                           shijian = shijian:shijian
-                           """
+        zip_safe           = False
     )
 
-def long_description(
-    filename = "README.md"
-    ):
-
+def long_description(filename='README.md'):
     if os.path.isfile(os.path.expandvars(filename)):
         try:
             import pypandoc
-            long_description = pypandoc.convert_file(filename, "rst")
+            long_description = pypandoc.convert_file(filename, 'rst')
         except ImportError:
             long_description = open(filename).read()
     else:
-        long_description = ""
+        long_description = ''
     return long_description
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

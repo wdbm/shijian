@@ -32,17 +32,11 @@
 ################################################################################
 """
 
-from __future__ import division
-
-name    = "shijian_examples_progress"
-version = "2017-03-09T2350Z"
-
 import time
 
 import shijian
 
 def main():
-
     list_1 = [
         30,
         30,
@@ -90,12 +84,11 @@ def main():
         30,
         30
     ]
-
     number_of_events = len(list_1)
     progress = shijian.Progress()
     progress.engage_quick_calculation_mode()
     for event_index, event in enumerate(list_1):
-        print(progress.add_datum(fraction = (event_index + 1) / number_of_events))
+        print(progress.add_datum(fraction = (event_index + 1) / float(number_of_events)))
         time.sleep(0.5)
 
 if __name__ == '__main__':

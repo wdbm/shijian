@@ -40,9 +40,6 @@ options:
     --dayruntime=TEXT  HHMM--HHMM [default: 1900--0700]
 """
 
-name    = "shijian_example_daily_timing"
-version = "2017-03-09T2340Z"
-
 import datetime
 import docopt
 import time
@@ -50,23 +47,14 @@ import time
 import shijian
 
 def main(options):
-
     day_run_time = options["--dayruntime"]
-
     while True:
-
         if shijian.in_daily_time_range(time_range = day_run_time):
-
             print("ok let's do this thing")
-
             # complex deep learning shit
-
         else:
-
             print("i'll wait till it's ma time fam")
-
             # doin' some other things while chillin'
-
         time.sleep(1)
 
 if __name__ == "__main__":

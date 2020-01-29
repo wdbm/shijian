@@ -32,11 +32,7 @@
 ################################################################################
 """
 
-name    = "shijian_examples_filesystem"
-version = "2017-06-08T1147Z"
-
 import os
-
 import shijian
 
 def main():

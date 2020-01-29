@@ -66,8 +66,8 @@ from sklearn.preprocessing import MinMaxScaler
 import seaborn as sns
 import technicolor
 
-name    = "shijian"
-version = "2018-06-02T1644Z"
+name        = "shijian"
+__version__ = "2020-01-29T1850Z"
 
 log = logging.getLogger(name)
 log.addHandler(technicolor.ColorisingStreamHandler())
@@ -94,7 +94,7 @@ def time_UTC(
     )
 
 def filename_time_UNIX(
-    style = "UNIX time S.SSSSSS",
+    style     = "UNIX time S.SSSSSS",
     extension = None
     ):
     filename = str(
@@ -144,9 +144,7 @@ def style_datetime_object(
     datetime_object = None,
     style           = "YYYY-MM-DDTHHMMZ"
     ):
-
     if type(datetime_object) is datetime.datetime:
-
         # filename safe
         if style == "YYYY-MM-DDTHHMMZ":
             return datetime_object.strftime("%Y-%m-%dT%H%MZ")
@@ -200,35 +198,26 @@ def style_datetime_object(
         # filename safe
         else:
             return datetime_object.strftime("%Y-%m-%dT%H%MZ")
-
     if type(datetime_object) is datetime.timedelta:
-
         if style == "YYYY-MM-DDTHHMMZ":
             style = "{DD} days, {HH}:{MM}:{SS}"
-
         if hasattr(datetime_object, "seconds"):
             seconds   = datetime_object.seconds + datetime_object.days * 24 * 3600
         else:
             seconds   = int(datetime_object)
-
         seconds_total = seconds
-
         minutes       = int(math.floor(seconds / 60))
         minutes_total = minutes
         seconds      -= minutes * 60
-
         hours         = int(math.floor(minutes / 60))
         hours_total   = hours
         minutes      -= hours * 60
-
         days          = int(math.floor(hours / 24))
         days_total    = days
         hours        -= days * 24
-
         years         = int(math.floor(days / 365))
         years_total   = years
         days         -= years * 365
-
         return style.format(**{
             "Y"   : years_total,
             "D"   : days_total,

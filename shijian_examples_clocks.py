@@ -32,9 +32,6 @@
 ################################################################################
 """
 
-name    = "shijian_examples_clocks"
-version = "2017-03-09T2350Z"
-
 import inspect
 import time
 

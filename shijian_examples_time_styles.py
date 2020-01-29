@@ -32,9 +32,6 @@
 ################################################################################
 """
 
-name    = "shijian_examples_time_styles"
-version = "2017-03-09T2350Z"
-
 import datetime
 import os
 
@@ -42,9 +39,7 @@ import pyprel
 import shijian
 
 def main():
-
     pyprel.print_line()
-
     print("time styles:")
     datetime_object_current_time_UTC = datetime.datetime.utcnow()
     styles = [
@@ -72,21 +67,16 @@ def main():
             datetime_object = datetime_object_current_time_UTC,
             style           = style
         ))
-
     pyprel.print_line()
-
     print("current time UTC:\n")
     print(shijian.time_UTC(style = "HH hours MM minutes SS sounds day DD month YYYY"))
-
     pyprel.print_line()
-
     print("minimal time style for seconds:\n")
     for seconds in [10, 100, 1000, 10000, 100000]:
         print("{seconds} seconds: {seconds_styled}".format(
             seconds        = seconds,
             seconds_styled = shijian.style_minimal_seconds(seconds)
         ))
-
     pyprel.print_line()
 
 if __name__ == '__main__':
