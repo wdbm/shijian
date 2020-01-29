@@ -67,7 +67,7 @@ import seaborn as sns
 import technicolor
 
 name        = "shijian"
-__version__ = "2020-01-29T1850Z"
+__version__ = "2020-01-29T1857Z"
 
 log = logging.getLogger(name)
 log.addHandler(technicolor.ColorisingStreamHandler())

@@ -7,7 +7,7 @@ import setuptools
 def main():
     setuptools.setup(
         name             = 'shijian',
-        version          = '2020.01.29.1850Z',
+        version          = '2020.01.29.1857',
         description      = 'change, time, file, list, statistics, language and other utilities',
         long_description = long_description(),
         url              = 'https://github.com/wdbm/shijian',
