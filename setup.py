@@ -7,7 +7,7 @@ import setuptools
 def main():
     setuptools.setup(
         name             = 'shijian',
-        version          = '2020.01.29.1857',
+        version          = '2023.10.19.0215',
         description      = 'change, time, file, list, statistics, language and other utilities',
         long_description = long_description(),
         url              = 'https://github.com/wdbm/shijian',
@@ -26,7 +26,7 @@ def main():
                            'pyprel',
                            'scipy',
                            'seaborn',
-                           'sklearn',
+                           'scikit-learn',
                            'subprocess32;python_version<\'3.0\'',
                            'technicolor'
                            ],
